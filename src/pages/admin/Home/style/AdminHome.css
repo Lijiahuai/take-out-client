@@ -1,0 +1,172 @@
+/* AdminHome.css */
+.admin-layout {
+    min-height: 100vh;
+    background: #f0f2f5;
+}
+
+.admin-sider {
+    box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+    z-index: 10;
+}
+
+.admin-logo {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+}
+
+.logo-collapsed {
+    font-size: 24px;
+}
+
+.logo-text {
+    color: #1890ff;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.admin-menu {
+    border-right: none;
+    padding-top: 8px;
+}
+
+.menu-icon {
+    font-size: 16px !important;
+}
+
+.admin-menu .ant-menu-item {
+    margin: 8px 0;
+    height: 40px;
+    line-height: 40px;
+    border-radius: 4px;
+}
+
+.admin-menu .ant-menu-item-selected {
+    background-color: #e6f7ff !important;
+}
+
+.admin-content-layout {
+    margin-left: 220px;
+    transition: all 0.2s;
+}
+
+.admin-layout.collapsed .admin-content-layout {
+    margin-left: 80px;
+}
+
+.admin-header {
+    padding: 0 24px;
+    background: #fff !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+    z-index: 9;
+    height: 64px;
+    line-height: 64px;
+}
+
+.header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.notification-badge {
+    cursor: pointer;
+}
+
+.notification-icon {
+    font-size: 18px;
+    color: rgba(0, 0, 0, 0.65);
+    transition: all 0.3s;
+}
+
+.notification-icon:hover {
+    color: #1890ff;
+}
+
+.user-avatar {
+    cursor: pointer;
+    padding: 0 8px;
+    transition: all 0.3s;
+}
+
+.user-avatar:hover {
+    background: rgba(0, 0, 0, 0.025);
+}
+
+.avatar {
+    background-color: #1890ff;
+}
+
+.username {
+    font-weight: 500;
+}
+
+.admin-main-content {
+    margin: 24px;
+    min-height: calc(100vh - 112px);
+}
+
+.content-container {
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    min-height: 100%;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+/* AdminHome.css */
+
+/* 主布局样式 */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background: #f0f2f5;
+}
+
+/* 侧边栏固定定位 */
+.admin-sider {
+    position: fixed !important;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 100;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 内容区域样式 */
+.admin-content-layout {
+    margin-left: 220px;
+    transition: margin 0.2s;
+    background: #f0f2f5;
+    min-height: 100vh;
+}
+
+/* 折叠状态适配 */
+.ant-layout-sider-collapsed+.admin-content-layout {
+    margin-left: 80px !important;
+}
+
+/* 其他原有样式保持不变 */
+.admin-logo {
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+}

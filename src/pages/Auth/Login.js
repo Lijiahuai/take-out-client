@@ -1,77 +1,111 @@
-// src/pages/Auth/Login.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { showNotification } from '../../components/ui/Notification'; // 导入通知组件
+import './css/login.css'
 
 export default function Login() {
     const [role, setRole] = useState('user');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async () => {
+        if (!username || !password) {
+            showNotification('请输入账号和密码', 'error');
+            return;
+        }
+
+        setIsLoading(true);
         try {
             const res = await fetch('http://localhost:8080/Auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password, role })
             });
-            const result = await res.text();
-            if (result==='success') {
-                navigate(role === 'user' ? '/user/home' : '/admin');
+
+            const result = await res.json();
+
+            if (result.status) {
+                // 保存信息
+                localStorage.setItem('username', result.username);
+                localStorage.setItem('role', result.role);
+                
+                showNotification('登录成功', 'success');
+                // 跳转页面
+                navigate(result.role === 'user' ? '/user/home' : '/admin');
             } else {
-                console.log(result);
-                alert('登录失败，请检查账号密码');
+                showNotification(result.error || '登录失败', 'error');
             }
         } catch (e) {
             console.error(e);
-            alert('网络错误');
+            showNotification('网络错误', 'error');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div style={{ maxWidth: 400, margin: '100px auto' }}>
-            <h2>登录</h2>
-            <div>
-                <label>
+        <div className="login-container">
+            <div className="login-card">
+                <h2 className="login-title">欢迎登录</h2>
+                
+                <div className="role-selector">
+                    <label className={`role-option ${role === 'user' ? 'active' : ''}`}>
+                        <input
+                            type="radio"
+                            value="user"
+                            checked={role === 'user'}
+                            onChange={() => setRole('user')}
+                            className="radio-input"
+                        />
+                        我是用户
+                    </label>
+                    <label className={`role-option ${role === 'admin' ? 'active' : ''}`}>
+                        <input
+                            type="radio"
+                            value="admin"
+                            checked={role === 'admin'}
+                            onChange={() => setRole('admin')}
+                            className="radio-input"
+                        />
+                        我是商家
+                    </label>
+                </div>
+                
+                <div className="input-group">
                     <input
-                        type="radio"
-                        value="user"
-                        checked={role === 'user'}
-                        onChange={() => setRole('user')}
+                        className="login-input"
+                        placeholder="请输入账号"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
                     />
-                    我是用户
-                </label>
-                <label style={{ marginLeft: 20 }}>
                     <input
-                        type="radio"
-                        value="admin"
-                        checked={role === 'admin'}
-                        onChange={() => setRole('admin')}
+                        className="login-input"
+                        type="password"
+                        placeholder="请输入密码"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
                     />
-                    我是商家
-                </label>
-            </div>
-            <div style={{ marginTop: 20 }}>
-                <input
-                    placeholder="账号"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                /><br />
-                <input
-                    type="password"
-                    placeholder="密码"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    style={{ marginTop: 10 }}
-                /><br />
-                <button onClick={handleLogin} style={{ marginTop: 20 }}>登录</button>
-                <div style={{ marginTop: 10 }}>
+                </div>
+                
+                <button 
+                    className="login-button" 
+                    onClick={handleLogin}
+                    disabled={isLoading}
+                >
+                    {isLoading ? '登录中...' : '登录'}
+                </button>
+                
+                <div className="register-prompt">
                     没有账号？
-                    <button onClick={() => navigate('/register')} style={{ marginLeft: 10 }}>
+                    <button 
+                        className="register-button"
+                        onClick={() => navigate('/register')}
+                    >
                         去注册
                     </button>
                 </div>
-
             </div>
         </div>
     );

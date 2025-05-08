@@ -4,6 +4,8 @@ import Login from '../pages/Auth/Login.js';
 import Register from '../pages/Auth/Register';
 import AdminHome from '../pages/admin/Home/AdminHome.jsx';
 import Dashboard from '../pages/admin/Dashboard/Dashboard.jsx';
+import DishList from '../pages/admin/Dishes/DishList.jsx';
+import OrderList from '../pages/admin/Orders/OrderList.jsx';
 export default function Router() {
   return (
     <BrowserRouter>
@@ -13,8 +15,10 @@ export default function Router() {
         <Route path="/register" element={<Register />} />
         {/* 管理员路由 */}
         <Route path="/admin" element={<AdminHome />}>
-          <Route index element={<Dashboard />} /> {/* 默认显示仪表盘 */}
+          <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="dish" element={<DishList />} />
+          <Route path="orders" element={<OrderList />} />
         </Route>
       </Routes>
     </BrowserRouter>

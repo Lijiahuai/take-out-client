@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet,useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { Layout, Menu, theme, Avatar, Dropdown, Space, Badge, message } from 'antd';
 import {
     DashboardOutlined,
@@ -8,8 +8,12 @@ import {
     PieChartOutlined,
     SettingOutlined,
     BellOutlined,
-    UserOutlined
+    UserOutlined,
+    LogoutOutlined,
+    ProfileOutlined,
+    SettingFilled
 } from '@ant-design/icons';
+import './style/AdminHome.css'; // 引入自定义样式
 
 const { Header, Sider, Content } = Layout;
 
@@ -23,28 +27,29 @@ export default function AdminHome() {
     const items = [
         {
             key: '1',
-            icon: <DashboardOutlined />,
+            icon: <DashboardOutlined className="menu-icon" />,
             label: '数据总览',
             path: 'dashboard',
         },
         {
             key: '2',
-            icon: <ShoppingCartOutlined />,
+            icon: <ShoppingCartOutlined className="menu-icon" />,
             label: '订单管理',
         },
         {
             key: '3',
-            icon: <MenuOutlined />,
+            icon: <MenuOutlined className="menu-icon" />,
             label: '菜品管理',
+            path: 'dish',
         },
         {
             key: '4',
-            icon: <PieChartOutlined />,
+            icon: <PieChartOutlined className="menu-icon" />,
             label: '数据报表',
         },
         {
             key: '5',
-            icon: <SettingOutlined />,
+            icon: <SettingOutlined className="menu-icon" />,
             label: '店铺设置',
         },
     ];
@@ -53,10 +58,12 @@ export default function AdminHome() {
         {
             key: '1',
             label: '个人中心',
+            icon: <ProfileOutlined />,
         },
         {
             key: '2',
             label: '账户设置',
+            icon: <SettingFilled />,
         },
         {
             type: 'divider',
@@ -64,120 +71,100 @@ export default function AdminHome() {
         {
             key: '3',
             label: '退出登录',
+            icon: <LogoutOutlined />,
+            danger: true,
         },
     ];
 
     const onMenuClick = ({ key }) => {
-        // 处理主菜单点击
         const mainMenuItem = items.find(item => item.key === key);
         if (mainMenuItem) {
-          // 处理主菜单点击逻辑
-          switch(key) {
-            case '1': // 数据总览
-              navigate('/admin/dashboard');
-              break;
-            case '2': // 订单管理
-              navigate('/admin/orders');
-              break;
-            case '3': // 菜品管理
-              navigate('/admin/menu');
-              break;
-            case '4': // 数据报表
-              navigate('/admin/reports');
-              break;
-            case '5': // 店铺设置
-              navigate('/admin/settings');
-              break;
-            default:
-              break;
-          }
-          return;
+            switch (key) {
+                case '1': navigate('/admin/dashboard'); break;
+                case '2': navigate('/admin/orders'); break;
+                case '3': navigate('/admin/dish'); break;
+                case '4': navigate('/admin/reports'); break;
+                case '5': navigate('/admin/settings'); break;
+                default: break;
+            }
+            return;
         }
-      
-        // 处理用户菜单点击
-        switch(key) {
-          case '1': // 个人中心
-            navigate('/admin/profile');
-            break;
-          case '2': // 账户设置
-            navigate('/admin/account-settings');
-            break;
-          case '3': // 退出登录
-            message.info('您已退出登录');
-            // 这里添加退出登录逻辑，例如：
-            // logout();
-            // navigate('/login');
-            break;
-          default:
-            break;
-        }
-      };
 
+        switch (key) {
+            case '1': navigate('/admin/profile'); break;
+            case '2': navigate('/admin/account-settings'); break;
+            case '3':
+                message.success('您已安全退出');
+                // logout();
+                navigate('/login');
+                break;
+            default: break;
+        }
+    };
 
     return (
-        <Layout className="min-h-screen">
+        <Layout className="admin-layout">
             <Sider
+
                 collapsible
                 collapsed={collapsed}
-                onCollapse={(value) => setCollapsed(value)}
+                onCollapse={setCollapsed}
                 width={220}
                 theme="light"
+                className="admin-sider"
             >
-                <div className="h-12 m-4 flex items-center justify-center">
-                    <h1 className="text-xl font-bold text-gray-800">
-                        {collapsed ? 'LOGO' : '商家后台管理系统'}
-                    </h1>
+                <div className="admin-logo">
+                    {collapsed ? (
+                        <div className="logo-collapsed">🍔</div>
+                    ) : (
+                        <h1 className="logo-text">美味餐厅管理系统</h1>
+                    )}
                 </div>
                 <Menu
                     theme="light"
                     mode="inline"
                     defaultSelectedKeys={['1']}
                     items={items}
-                    style={{ borderRight: 0 }}
+                    className="admin-menu"
+                    onClick={onMenuClick}
                 />
             </Sider>
-            <Layout>
-                <Header
-                    style={{
-                        padding: '0 24px',
-                        background: colorBgContainer,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                    }}
-                >
-                    <div className="flex items-center">
-                        <h2 className="text-lg font-semibold">美味餐厅管理后台</h2>
+            <Layout className="admin-content-layout">
+                <Header className="admin-header">
+                    <div className="header-left">
+                        <h2 className="header-title">商家控制台</h2>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <Badge count={5} size="small">
-                            <BellOutlined className="text-lg cursor-pointer" />
+                    <div className="header-right">
+                        <Badge
+                            count={5}
+                            size="small"
+                            className="notification-badge"
+                        >
+                            <BellOutlined className="notification-icon" />
                         </Badge>
                         <Dropdown
                             menu={{
                                 items: userMenuItems,
                                 onClick: onMenuClick,
                             }}
+                            placement="bottomRight"
                         >
-                            <Space className="cursor-pointer">
-                                <Avatar icon={<UserOutlined />} />
-                                <span className="font-medium">管理员</span>
+                            <Space className="user-avatar">
+                                <Avatar
+                                    icon={<UserOutlined />}
+                                    className="avatar"
+                                />
+                                <span className="username">管理员</span>
                             </Space>
                         </Dropdown>
                     </div>
                 </Header>
-                <Content
-                    style={{
-                        margin: '24px 16px',
-                        padding: 24,
-                        minHeight: 280,
-                        background: colorBgContainer,
-                        borderRadius: 8,
-                    }}
-                >
-                    <Outlet />
+                <Content className="admin-main-content">
+                    <div className="content-container">
+                        <Outlet />
+                    </div>
                 </Content>
             </Layout>
-        </Layout>
+        </Layout >
     );
 }
