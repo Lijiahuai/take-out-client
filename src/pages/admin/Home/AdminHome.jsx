@@ -76,7 +76,7 @@ export default function AdminHome() {
         },
     ];
 
-    const onMenuClick = ({ key }) => {
+    const onMainMenuClick = ({ key }) => {
         const mainMenuItem = items.find(item => item.key === key);
         if (mainMenuItem) {
             switch (key) {
@@ -84,23 +84,24 @@ export default function AdminHome() {
                 case '2': navigate('/admin/orders'); break;
                 case '3': navigate('/admin/dish'); break;
                 case '4': navigate('/admin/reports'); break;
-                case '5': navigate('/admin/settings'); break;
+                case '5': navigate('/admin/edit'); break;
                 default: break;
             }
             return;
         }
-
+    };
+    const onUserMenuClick = ({ key }) => {
         switch (key) {
             case '1': navigate('/admin/profile'); break;
-            case '2': navigate('/admin/account-settings'); break;
-            case '3':
-                message.success('您已安全退出');
-                // logout();
+            case '2': navigate('/admin/account'); break;
+            case '3': {
+                message.success('退出登录成功');
                 navigate('/login');
                 break;
+            }
             default: break;
         }
-    };
+    }
 
     return (
         <Layout className="admin-layout">
@@ -126,7 +127,7 @@ export default function AdminHome() {
                     defaultSelectedKeys={['1']}
                     items={items}
                     className="admin-menu"
-                    onClick={onMenuClick}
+                    onClick={onMainMenuClick}
                 />
             </Sider>
             <Layout className="admin-content-layout">
@@ -145,7 +146,7 @@ export default function AdminHome() {
                         <Dropdown
                             menu={{
                                 items: userMenuItems,
-                                onClick: onMenuClick,
+                                onClick: onUserMenuClick,
                             }}
                             placement="bottomRight"
                         >

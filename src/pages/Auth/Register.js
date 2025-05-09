@@ -7,8 +7,6 @@ export default function Register() {
     const [role, setRole] = useState('user');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [shopName, setShopName] = useState('');
-    const [phone, setPhone] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -18,16 +16,9 @@ export default function Register() {
             return;
         }
 
-        if (role === 'admin' && (!shopName || !phone)) {
-            showNotification('请填写商家名称和联系电话', 'error');
-            return;
-        }
-
         setIsLoading(true);
         try {
-            const requestBody = role === 'user'
-                ? { username, password, role }
-                : { username, password, role, shopName, phone };
+            const requestBody = { username, password, role };
 
             const res = await fetch('http://localhost:8080/Auth/register', {
                 method: 'POST',
@@ -54,7 +45,7 @@ export default function Register() {
         <div className="register-container">
             <div className="register-card">
                 <h2 className="register-title">用户注册</h2>
-                
+
                 <div className="role-selector">
                     <label className={`role-option ${role === 'user' ? 'active' : ''}`}>
                         <input
@@ -77,7 +68,7 @@ export default function Register() {
                         我是商家
                     </label>
                 </div>
-                
+
                 <div className="input-group">
                     <input
                         className="register-input"
@@ -92,36 +83,19 @@ export default function Register() {
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                     />
-
-                    {role === 'admin' && (
-                        <>
-                            <input
-                                className="register-input"
-                                placeholder="请输入商家/店铺名"
-                                value={shopName}
-                                onChange={e => setShopName(e.target.value)}
-                            />
-                            <input
-                                className="register-input"
-                                placeholder="请输入联系电话"
-                                value={phone}
-                                onChange={e => setPhone(e.target.value)}
-                            />
-                        </>
-                    )}
                 </div>
-                
-                <button 
-                    className="register-button" 
+
+                <button
+                    className="register-button"
                     onClick={handleRegister}
                     disabled={isLoading}
                 >
                     {isLoading ? '注册中...' : '立即注册'}
                 </button>
-                
+
                 <div className="login-prompt">
                     已有账号？
-                    <button 
+                    <button
                         className="login-button"
                         onClick={() => navigate('/login')}
                     >

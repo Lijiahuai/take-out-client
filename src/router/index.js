@@ -6,6 +6,7 @@ import AdminHome from '../pages/admin/Home/AdminHome.jsx';
 import Dashboard from '../pages/admin/Dashboard/Dashboard.jsx';
 import DishList from '../pages/admin/Dishes/DishList.jsx';
 import OrderList from '../pages/admin/Orders/OrderList.jsx';
+import AdminInfoEditor from '../pages/admin/Settings/AdminInfoEditor.jsx';
 export default function Router() {
   return (
     <BrowserRouter>
@@ -19,6 +20,7 @@ export default function Router() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="dish" element={<DishList />} />
           <Route path="orders" element={<OrderList />} />
+          <Route path="edit" element={<AdminInfoEditor />} />
         </Route>
       </Routes>
     </BrowserRouter>

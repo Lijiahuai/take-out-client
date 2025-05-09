@@ -1,0 +1,65 @@
+.admin-info-editor {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .editor-title {
+    text-align: center;
+    margin-bottom: 24px;
+    color: #1890ff;
+  }
+  
+  .admin-form {
+    padding: 16px;
+  }
+  
+  .coord-input {
+    width: 100%;
+  }
+  
+  .logo-upload .ant-upload-list-item {
+    margin-top: 8px;
+  }
+  
+  .logo-upload .ant-upload-list-item-thumbnail img {
+    max-height: 100px;
+    object-fit: contain;
+  }
+  
+  .submit-btn-container {
+    text-align: center;
+    margin-top: 24px;
+  }
+  
+  .submit-btn {
+    width: 200px;
+    height: 40px;
+    font-size: 16px;
+  }
+  
+  .ant-form-item-label > label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .ant-input, .ant-input-number {
+    border-radius: 4px;
+  }
+  
+  .ant-input-textarea {
+    resize: vertical;
+  }
+  
+  @media (max-width: 768px) {
+    .admin-info-editor {
+      padding: 16px;
+    }
+    
+    .submit-btn {
+      width: 100%;
+    }
+  }

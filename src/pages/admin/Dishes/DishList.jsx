@@ -30,9 +30,8 @@ const DishList = () => {
                 total: data.total,
                 current: data.page,
             });
-            // console.log(data);
         } catch (error) {
-            message.error('获取菜品列表失败: ' + error.message);
+            showNotification('获取菜品列表失败: ' + error.message, 'error');
         } finally {
             setLoading(false);
         }
@@ -42,23 +41,23 @@ const DishList = () => {
         fetchDishes();
     }, []);
 
-
     const handleTableChange = (newPagination) => {
         fetchDishes({
             pagination: newPagination,
         });
     };
+
     const handleDelete = async (id) => {
         try {
             const result = await deleteDish(id);
             if (result === true) {
-                showNotification('删除成功', 'success');  // 修改为 showNotification
+                showNotification('删除成功', 'success');
                 fetchDishes();
             } else {
-                showNotification('删除失败', 'error');    // 修改为 showNotification
+                showNotification('删除失败', 'error');
             }
         } catch (error) {
-            showNotification(error?.message || '删除出错', 'error');  // 修改为 showNotification
+            showNotification(error?.message || '删除出错', 'error');
         }
     };
 
@@ -74,15 +73,18 @@ const DishList = () => {
 
     const handleFormSuccess = () => {
         handleModalClose();
-        fetchDishes(); // 刷新列表
+        fetchDishes();
+        showNotification(currentDish ? '菜品更新成功' : '菜品添加成功', 'success');
     };
-
     const columns = [
         {
-            title: 'ID',
-            dataIndex: 'id',
-            key: 'id',
+            title: '序号',
+            key: 'index',
             width: 80,
+            render: (text, record, index) => {
+                const { current, pageSize } = pagination;
+                return (current - 1) * pageSize + index + 1;
+            }
         },
         {
             title: '菜品名称',
@@ -109,6 +111,12 @@ const DishList = () => {
             dataIndex: 'price',
             key: 'price',
             render: (price) => `¥${price}`,
+        },
+        {
+            title: '菜品描述',
+            dataIndex: 'description',
+            key: 'description',
+            width: 200
         },
         {
             title: '状态',
