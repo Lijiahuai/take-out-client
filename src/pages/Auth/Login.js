@@ -30,6 +30,7 @@ export default function Login() {
                 // 保存信息
                 localStorage.setItem('username', result.username);
                 localStorage.setItem('role', result.role);
+                localStorage.setItem('id', result.id);
                 
                 showNotification('登录成功', 'success');
                 // 跳转页面

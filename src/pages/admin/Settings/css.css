@@ -1,65 +1,190 @@
+/* css.css - 商家信息编辑组件专用样式 */
+
 .admin-info-editor {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 24px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .editor-title {
-    text-align: center;
-    margin-bottom: 24px;
-    color: #1890ff;
-  }
-  
-  .admin-form {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* 头部区域样式 */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.editor-title {
+  margin: 0;
+  color: #1890ff;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.last-update {
+  font-size: 14px;
+  color: #666;
+}
+
+.last-update .ant-tag {
+  margin-left: 8px;
+  font-size: 13px;
+}
+
+/* 展示模式样式 */
+.display-mode {
+  padding: 16px;
+  background: #fafafa;
+  border-radius: 4px;
+}
+
+.display-mode .ant-descriptions {
+  margin-top: 12px;
+}
+
+.display-mode .ant-descriptions-item-label {
+  font-weight: 500;
+  color: #333;
+  width: 120px;
+}
+
+.display-mode .ant-descriptions-item-content {
+  color: #666;
+  word-break: break-word;
+}
+
+.display-mode img {
+  max-width: 200px;
+  max-height: 200px;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+/* 操作按钮区域 */
+.action-buttons {
+  margin-top: 24px;
+  text-align: right;
+}
+
+.action-buttons .ant-btn {
+  min-width: 120px;
+  height: 40px;
+}
+
+/* 表单编辑模式样式 */
+.admin-form {
+  padding: 16px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+}
+
+.admin-form .ant-form-item-label > label {
+  font-weight: 500;
+  color: #333;
+}
+
+.admin-form .ant-input,
+.admin-form .ant-input-number,
+.admin-form .ant-input-textarea {
+  border-radius: 4px;
+}
+
+.coord-input {
+  width: 100%;
+}
+
+/* 上传组件样式 */
+.logo-upload .ant-upload-list-item {
+  margin-top: 8px;
+}
+
+.logo-upload .ant-upload-list-item-thumbnail img {
+  max-height: 100px;
+  object-fit: contain;
+}
+
+/* 提交按钮区域 */
+.submit-btn-container {
+  margin-top: 24px;
+  text-align: right;
+}
+
+.submit-btn-container .ant-space {
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.submit-btn-container .ant-btn {
+  min-width: 120px;
+  height: 40px;
+}
+
+.submit-btn-container .ant-btn-default {
+  margin-left: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .admin-info-editor {
     padding: 16px;
+    margin: 12px;
   }
-  
-  .coord-input {
-    width: 100%;
+
+  .header-section {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .logo-upload .ant-upload-list-item {
+
+  .last-update {
     margin-top: 8px;
   }
-  
-  .logo-upload .ant-upload-list-item-thumbnail img {
-    max-height: 100px;
-    object-fit: contain;
+
+  .display-mode .ant-descriptions-item {
+    display: block;
+    margin-bottom: 8px;
   }
-  
-  .submit-btn-container {
-    text-align: center;
-    margin-top: 24px;
+
+  .display-mode .ant-descriptions-item-label {
+    width: auto;
+    display: block;
+    margin-bottom: 4px;
   }
-  
-  .submit-btn {
-    width: 200px;
-    height: 40px;
-    font-size: 16px;
+
+  .display-mode img {
+    max-width: 150px;
   }
-  
-  .ant-form-item-label > label {
-    font-weight: 500;
-    color: #333;
+
+  .admin-form {
+    padding: 12px;
   }
-  
-  .ant-input, .ant-input-number {
-    border-radius: 4px;
+
+  .submit-btn-container .ant-space {
+    flex-direction: column-reverse;
+    gap: 12px;
   }
-  
-  .ant-input-textarea {
-    resize: vertical;
+
+  .submit-btn-container .ant-btn {
+    width: 100%;
+    margin-left: 0;
   }
-  
-  @media (max-width: 768px) {
-    .admin-info-editor {
-      padding: 16px;
-    }
-    
-    .submit-btn {
-      width: 100%;
-    }
-  }
+}
+
+/* 加载状态样式 */
+.loading-placeholder {
+  text-align: center;
+  padding: 40px 0;
+  color: #999;
+}
+
+/* 空状态提示 */
+.empty-value {
+  color: #bfbfbf;
+  font-style: italic;
+}
+
