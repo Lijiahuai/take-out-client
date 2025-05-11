@@ -106,6 +106,20 @@ const DishList = () => {
                 />
             ),
         },
+        // 新增的分类字段
+        {
+            title: '菜品分类',
+            dataIndex: 'category',
+            key: 'category',
+            render: (category) => category || '未分类', // 处理空值情况
+            width: 120, // 可选：设置列宽
+            filters: [ // 可选：添加筛选功能
+                { text: '中式', value: '中式' },
+                { text: '西式', value: '西式' },
+                { text: '日式', value: '日式' },
+            ],
+            onFilter: (value, record) => record.category === value,
+        },
         {
             title: '价格(元)',
             dataIndex: 'price',

@@ -15,6 +15,7 @@ const DishForm = ({ initialValues, onSuccess, onCancel }) => {
 
   useEffect(() => {
     if (initialValues) {
+      console.log(initialValues);
       form.setFieldsValue(initialValues);
       setImageUrl(initialValues.image);
     } else {
@@ -113,6 +114,13 @@ const DishForm = ({ initialValues, onSuccess, onCancel }) => {
                 style={{ width: '100%' }}
                 placeholder="请输入价格"
               />
+            </Form.Item>
+            <Form.Item
+              label="菜品类别"
+              name="category"
+              rules={[{ required: true, message: '请输入类别' }]}
+            >
+              <Input placeholder="请输入菜品类别" />
             </Form.Item>
 
             <Form.Item

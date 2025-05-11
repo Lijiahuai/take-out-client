@@ -1,0 +1,176 @@
+/* 全局容器样式 */
+.simulated-map-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: #f5f5f5;
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  }
+  
+  /* 加载状态样式 */
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
+  }
+  
+  /* 主地图容器 */
+  .simulated-map {
+    display: flex;
+    height: 100%;
+    position: relative;
+  }
+  
+  /* 地图背景区域 */
+  .map-background {
+    position: relative;
+    width: 70%;
+    height: 100%;
+    background-color: #e8f4f8;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* 网格线样式 */
+  .grid-line {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .grid-line.horizontal {
+    width: 100%;
+    height: 1px;
+    left: 0;
+  }
+  
+  .grid-line.vertical {
+    width: 1px;
+    height: 100%;
+    top: 0;
+  }
+  
+  /* 用户标记样式 */
+  .user-marker {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    z-index: 10;
+  }
+  
+  .marker-icon {
+    font-size: 30px;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .pulse-effect {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #1890ff;
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: pulse 2s infinite;
+    z-index: 1;
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.3;
+    }
+    70% {
+      transform: scale(1.3);
+      opacity: 0.1;
+    }
+    100% {
+      transform: scale(0.8);
+      opacity: 0.3;
+    }
+  }
+  
+  /* 商家列表区域 */
+  .shop-list {
+    width: 30%;
+    height: 100%;
+    padding: 16px;
+    background-color: #fff;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+    overflow-y: auto;
+  }
+  
+  .shop-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .shop-list-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  /* 当前距离标签 */
+  .current-distance-tag {
+    background-color: #f0f9ff;
+    color: #1890ff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 16px;
+    display: inline-block;
+    border: 1px solid #d0e3ff;
+  }
+  
+  /* 商家卡片组样式 */
+  .shop-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 8px 0;
+  }
+  
+  /* 筛选按钮样式 */
+  .icon-filter {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3'%3E%3C/polygon%3E%3C/svg%3E");
+    background-size: contain;
+    margin-right: 4px;
+  }
+  
+  /* 轮播指示点样式 */
+  .ant-carousel .slick-dots li button {
+    background-color: #ccc;
+  }
+  
+  .ant-carousel .slick-dots li.slick-active button {
+    background-color: #1890ff;
+  }
+  
+  /* 响应式调整 */
+  @media (max-width: 768px) {
+    .simulated-map {
+      flex-direction: column;
+    }
+    
+    .map-background {
+      width: 100%;
+      height: 50%;
+    }
+    
+    .shop-list {
+      width: 100%;
+      height: 50%;
+    }
+  }

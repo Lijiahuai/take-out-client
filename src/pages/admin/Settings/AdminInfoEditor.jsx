@@ -78,11 +78,16 @@ const AdminInfoEditor = ({ onSuccess }) => {
         update_time: new Date().toISOString()
       };
 
-      await updateAdminInfo(adminId, updatedData);
-      setAdminData(updatedData);
-      showNotification('商家信息更新成功', 'success');
-      setIsEditing(false);
-      onSuccess?.();
+      const res = await updateAdminInfo(adminId, updatedData);
+      if (res) {
+        setAdminData(updatedData);
+        showNotification('商家信息更新成功', 'success');
+        setIsEditing(false);
+        onSuccess?.();
+      } else {
+        showNotification('商家信息更新失败,请检查是否设置了不合理的数据', 'error');
+      }
+
     } catch (error) {
       showNotification('更新失败: ' + error.message, 'error');
     } finally {

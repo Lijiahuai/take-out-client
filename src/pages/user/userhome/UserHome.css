@@ -1,0 +1,139 @@
+/* 布局样式 */
+.logo {
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 16px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  padding: 0 24px;
+}
+
+.header-icon {
+  font-size: 18px;
+  cursor: pointer;
+  color: rgba(0, 0, 0, 0.65);
+  transition: color 0.3s;
+}
+
+.header-icon:hover {
+  color: #1890ff;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0 8px;
+  transition: all 0.3s;
+}
+
+.user-info:hover {
+  background: rgba(0, 0, 0, 0.025);
+}
+
+.username {
+  margin-left: 8px;
+  font-weight: 500;
+}
+
+/* 内容区域样式 */
+.home-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.content-section {
+  background: #fff;
+  padding: 16px;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+/* 响应式调整 */
+@media (max-width: 992px) {
+  .home-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 确保html和body元素填满屏幕 */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/* 修复antd布局的潜在问题 */
+.ant-layout {
+  min-height: 100% !important;
+}
+
+/* 内容区滚动条样式（可选） */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+/* UserHome.css */
+
+.content-container {
+  padding: 24px;
+  background: var(--ant-color-bg-container);
+  height: calc(100vh - 64px);
+  /* 减去顶部导航高度 */
+  overflow: auto;
+}
+
+/* 如果侧边栏是可折叠的，添加响应式样式 */
+.collapsed .content-container {
+  margin-left: 80px;
+  width: calc(100% - 80px);
+}
+
+.not-collapsed .content-container {
+  margin-left: 200px;
+  width: calc(100% - 200px);
+}
+
+.floating-cart-icon {
+  position: absolute;
+  /* 使图标浮动 */
+  background: #ff6f61;
+  padding: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: transform 0.3s ease;
+  /* 添加平滑过渡效果 */
+}
+
+.floating-cart-icon:hover {
+  transform: scale(1.2);
+  /* 悬停时稍微放大 */
+}
+
+.floating-cart-icon .anticon {
+  color: white;
+  font-size: 30px;
+}

@@ -1,0 +1,153 @@
+.user-dashboard {
+  padding: 20px;
+  background-color: #fafafa;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-header h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.section-icon {
+  color: #ff4d4f;
+  margin-right: 8px;
+}
+
+.view-all {
+  color: #1890ff;
+}
+
+.dishes-carousel {
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.dish-card {
+  width: 90%;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.dish-image {
+  height: 200px;
+  object-fit: cover;
+}
+
+.dish-info {
+  padding: 10px;
+}
+
+.dish-info h3 {
+  margin: 0 0 8px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.price {
+  color: #ff4d4f;
+  font-weight: bold;
+  font-size: 1.1rem;
+  margin: 8px 0;
+}
+
+.category-tag {
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.loading-spinner {
+  margin: 50px auto;
+  display: block;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}
+
+/* Custom dots for carousel */
+.custom-dots li button {
+  background: #1890ff !important;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .dish-card {
+    width: 95%;
+  }
+
+  .dish-image {
+    height: 150px;
+  }
+}
+
+/* 新增样式 */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dish-page {
+  padding: 0 10px;
+}
+
+.dish-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 15px;
+}
+
+.dish-col {
+  flex: 0 0 calc(33.333% - 15px);
+  max-width: calc(33.333% - 15px);
+}
+
+@media (max-width: 1024px) {
+  .dish-col {
+    flex: 0 0 calc(50% - 15px);
+    max-width: calc(50% - 15px);
+  }
+}
+
+@media (max-width: 768px) {
+  .dish-col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* 原有样式保持不变 */
+.user-dashboard {
+  padding: 20px;
+}
+
+.loading-spinner {
+  margin: 50px auto;
+  display: block;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+}

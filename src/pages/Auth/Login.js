@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { showNotification } from '../../components/ui/Notification'; // 导入通知组件
-import './css/login.css'
+import { showNotification } from '../../components/ui/Notification';
+import './css/login.css';
 
 export default function Login() {
     const [role, setRole] = useState('user');
@@ -27,14 +27,12 @@ export default function Login() {
             const result = await res.json();
 
             if (result.status) {
-                // 保存信息
                 localStorage.setItem('username', result.username);
                 localStorage.setItem('role', result.role);
                 localStorage.setItem('id', result.id);
                 
                 showNotification('登录成功', 'success');
-                // 跳转页面
-                navigate(result.role === 'user' ? '/user/home' : '/admin');
+                navigate(result.role === 'user' ? '/user' : '/admin');
             } else {
                 showNotification(result.error || '登录失败', 'error');
             }
@@ -48,6 +46,10 @@ export default function Login() {
 
     return (
         <div className="login-container">
+            {/* Background image with blur effect */}
+            <div className="background-image"></div>
+            
+            {/* Login card */}
             <div className="login-card">
                 <h2 className="login-title">欢迎登录</h2>
                 

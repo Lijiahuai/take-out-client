@@ -1,0 +1,32 @@
+.shop-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .shop-info h4 {
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  .shop-info .distance {
+    font-size: 12px;
+    margin-top: 4px;
+    display: inline-block;
+  }
+  
+  .shop-card-body {
+    margin-top: 8px;
+    font-size: 14px;
+  }
+  
+  .shop-card-body .label {
+    font-weight: bold;
+    margin-right: 4px;
+  }
+  
+  .shop-card-body .description {
+    color: #555;
+    margin-top: 4px;
+  }
+  

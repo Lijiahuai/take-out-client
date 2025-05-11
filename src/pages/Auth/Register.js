@@ -43,9 +43,13 @@ export default function Register() {
 
     return (
         <div className="register-container">
+            {/* Background image with blur effect */}
+            <div className="background-image"></div>
+            
+            {/* Registration card */}
             <div className="register-card">
                 <h2 className="register-title">用户注册</h2>
-
+                
                 <div className="role-selector">
                     <label className={`role-option ${role === 'user' ? 'active' : ''}`}>
                         <input
@@ -68,7 +72,7 @@ export default function Register() {
                         我是商家
                     </label>
                 </div>
-
+                
                 <div className="input-group">
                     <input
                         className="register-input"
@@ -84,7 +88,7 @@ export default function Register() {
                         onChange={e => setPassword(e.target.value)}
                     />
                 </div>
-
+                
                 <button
                     className="register-button"
                     onClick={handleRegister}
@@ -92,7 +96,7 @@ export default function Register() {
                 >
                     {isLoading ? '注册中...' : '立即注册'}
                 </button>
-
+                
                 <div className="login-prompt">
                     已有账号？
                     <button
