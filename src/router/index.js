@@ -16,6 +16,8 @@ import AdminInfoEditor from '../pages/admin/Settings/AdminInfoEditor.jsx';
 import UserHome from '../pages/user/userhome/UserHome.jsx';
 import UserDashboard from '../pages/user/dashboard/UserDashboard.jsx';
 import SimulatedMap from '../pages/user/map/SimulatedMap.jsx'
+import UserOrderList from '../pages/user/order/UserOrderList.jsx';
+import UserProfile from '../pages/user/settings/UserProfile.jsx';
 export default function Router() {
   return (
     <BrowserRouter>
@@ -44,11 +46,8 @@ export default function Router() {
           <Route index element={<UserDashboard />} />
           <Route path="home" element={<UserDashboard />} />
           <Route path="map" element={<SimulatedMap />} />
-          {/* <Route path="orders" element={<OrderList />} />
-          <Route path="favorites" element={<Favorites />} />
-          <Route path="messages" element={<Messages />} />
-          <Route path="settings" element={<Settings />} />
-          <Route path="profile" element={<UserProfile />} /> */}
+          <Route path="orders" element={<UserOrderList />} />
+          <Route path="profile" element={<UserProfile />} />
         </Route>
 
         {/* </Route> */}

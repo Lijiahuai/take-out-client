@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, Avatar } from 'antd';
-import './ShopCard.css'; // 可选：单独的样式文件（用于卡片样式细化）
+import './ShopCard.css';
 
-const ShopCard = ({ shop }) => {
+const ShopCard = ({ shop, onClick }) => {
   const {
     name,
     phone,
@@ -15,7 +15,9 @@ const ShopCard = ({ shop }) => {
   return (
     <Card
       className="shop-card"
+      hoverable
       style={{ borderLeft: `3px solid ${color || '#1890ff'}` }}
+      onClick={() => onClick(shop.id)}
     >
       <div className="shop-card-header">
         {logoUrl ? (

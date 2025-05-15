@@ -1,0 +1,63 @@
+/* ShopDetail.css */
+.shop-detail-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.shop-detail-content {
+    background: white;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    z-index: 1001;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.ant-card {
+    width: 100%;
+}
+
+.ant-card-cover img {
+    height: 200px;
+    object-fit: cover;
+}
+
+.ant-card-body p {
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.ant-card-body strong {
+    color: #333;
+    margin-right: 8px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .shop-detail-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+}

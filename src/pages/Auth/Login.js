@@ -27,10 +27,15 @@ export default function Login() {
             const result = await res.json();
 
             if (result.status) {
-                localStorage.setItem('username', result.username);
-                localStorage.setItem('role', result.role);
-                localStorage.setItem('id', result.id);
-                
+                const userInfo = {
+                    role: result.role,
+                    data: result.role === 'admin' ? result.admin : result.user  // ✅ 存储完整对象
+                };
+
+                // 存储在 localStorage 中
+                localStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+                console.log(userInfo);
                 showNotification('登录成功', 'success');
                 navigate(result.role === 'user' ? '/user' : '/admin');
             } else {
@@ -44,15 +49,16 @@ export default function Login() {
         }
     };
 
+
     return (
         <div className="login-container">
             {/* Background image with blur effect */}
             <div className="background-image"></div>
-            
+
             {/* Login card */}
             <div className="login-card">
                 <h2 className="login-title">欢迎登录</h2>
-                
+
                 <div className="role-selector">
                     <label className={`role-option ${role === 'user' ? 'active' : ''}`}>
                         <input
@@ -75,7 +81,7 @@ export default function Login() {
                         我是商家
                     </label>
                 </div>
-                
+
                 <div className="input-group">
                     <input
                         className="login-input"
@@ -91,18 +97,18 @@ export default function Login() {
                         onChange={e => setPassword(e.target.value)}
                     />
                 </div>
-                
-                <button 
-                    className="login-button" 
+
+                <button
+                    className="login-button"
                     onClick={handleLogin}
                     disabled={isLoading}
                 >
                     {isLoading ? '登录中...' : '登录'}
                 </button>
-                
+
                 <div className="register-prompt">
                     没有账号？
-                    <button 
+                    <button
                         className="register-button"
                         onClick={() => navigate('/register')}
                     >

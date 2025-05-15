@@ -25,16 +25,20 @@ const UserHome = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [cartVisible, setCartVisible] = useState(false);
+  const { role, data } = JSON.parse(localStorage.getItem('userInfo'));
+
 
   // 用户信息
   const user = {
-    name: '张三',
+    name: data.real_name,
+    gender: data.gender,
+    phone: data.phone,
     avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
     unreadMessages: 3,
     unreadNotifications: 5,
     location: {
-      x: Math.floor(Math.random() * 10000), // 0-10000随机x坐标
-      y: Math.floor(Math.random() * 10000)  // 0-10000随机y坐标
+      x: data.x,
+      y: data.y,
     }
   };
 
@@ -52,10 +56,10 @@ const UserHome = () => {
   const onMainMenuClick = ({ key }) => {
     switch (key) {
       case 'home':
-        navigate('/user/home', { state: { user } });
+        navigate('/user/home');
         break;
       case 'map':
-        navigate('/user/map', { state: { user } });
+        navigate('/user/map');
         break;
       case 'orders':
         navigate('/user/orders');
@@ -67,7 +71,7 @@ const UserHome = () => {
         navigate('/user/messages');
         break;
       case 'settings':
-        navigate('/user/settings');
+        navigate('/user/profile');
         break;
       default:
         break;

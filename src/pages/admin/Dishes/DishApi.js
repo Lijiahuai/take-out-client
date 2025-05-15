@@ -10,17 +10,19 @@ const handleResponse = async (response) => {
 
 export const getAllDish = async (params = {}) => {
     try {
-        const username = localStorage.getItem('username');
-        const res = await fetch(`http://localhost:8080/admin/dish/getAllDish?username=${username}`);
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        if (!userInfo || !userInfo.username) throw new Error('用户未登录');
+
+        const res = await fetch(`http://localhost:8080/admin/dish/getAllDish?username=${userInfo.username}`);
 
         if (!res.ok) throw new Error('请求失败');
 
-        const list = await res.json(); // 直接获取数组
+        const list = await res.json();
 
         return {
             data: {
-                list,          // 直接使用返回的数组
-                total: list.length, // 前端分页时计算总数
+                list,
+                total: list.length,
                 page: params.page || 1,
                 pageSize: params.pageSize || 10
             }
@@ -30,6 +32,7 @@ export const getAllDish = async (params = {}) => {
         throw error;
     }
 };
+
 
 export const updateDish = async (dishData) => {
     const response = await fetch(`http://localhost:8080/admin/dish/updateDish`, {

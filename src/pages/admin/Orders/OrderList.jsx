@@ -74,10 +74,30 @@ const OrderList = () => {
   const columns = [
     {
       title: '订单ID',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: 'order_id',
+      key: 'order_id',
       width: 100,
       sorter: true,
+    },
+    {
+      title: '用户信息',
+      key: 'user_info',
+      render: (_, record) => (
+        <div>
+          <div>{record.real_name}</div>
+          <div>{record.phone}</div>
+        </div>
+      ),
+    },
+    {
+      title: '配送地址',
+      key: 'address',
+      render: (_, record) => (
+        <div>
+          <div>坐标: ({record.x}, {record.y})</div>
+          {record.remark && <div>备注: {record.remark}</div>}
+        </div>
+      ),
     },
     {
       title: '用户ID',
@@ -89,8 +109,8 @@ const OrderList = () => {
       title: '总金额',
       dataIndex: 'total_price',
       key: 'total_price',
-      render: (price) => `¥${price.toFixed(2)}`,
-      sorter: (a, b) => a.total_price - b.total_price,
+      render: (price) => `¥${price?.toFixed(2) || '0.00'}`,
+      sorter: (a, b) => (a.total_price || 0) - (b.total_price || 0),
     },
     {
       title: '状态',
@@ -110,8 +130,8 @@ const OrderList = () => {
       title: '创建时间',
       dataIndex: 'create_time',
       key: 'create_time',
-      render: (time) => new Date(time).toLocaleString(),
-      sorter: (a, b) => new Date(a.create_time) - new Date(b.create_time),
+      render: (time) => time ? new Date(time).toLocaleString() : '-',
+      sorter: (a, b) => new Date(a.create_time || 0) - new Date(b.create_time || 0),
     },
     {
       title: '操作',
@@ -123,19 +143,19 @@ const OrderList = () => {
           <Button
             type="primary"
             icon={<EyeOutlined />}
-            onClick={() => navigate(`/admin/orders/detail/${record.id}`)}
+            onClick={() => navigate(`/admin/orders/detail/${record.order_id}`)}
           >
             详情
           </Button>
           <Button
             icon={<EditOutlined />}
-            onClick={() => navigate(`/admin/orders/edit/${record.id}`)}
+            onClick={() => navigate(`/admin/orders/edit/${record.order_id}`)}
           >
             编辑
           </Button>
           <Popconfirm
             title="确定要删除此订单吗？"
-            onConfirm={() => handleDelete(record.id)}
+            onConfirm={() => handleDelete(record.order_id)}
             okText="确定"
             cancelText="取消"
           >
@@ -154,7 +174,7 @@ const OrderList = () => {
         <h2 className="text-xl font-semibold">订单管理</h2>
         <div className="flex space-x-4">
           <Input
-            placeholder="搜索订单ID或用户ID"
+            placeholder="搜索订单ID、用户ID或姓名"
             prefix={<SearchOutlined />}
             style={{ width: 300 }}
             value={searchText}
@@ -169,12 +189,12 @@ const OrderList = () => {
 
       <Table
         columns={columns}
-        rowKey="id"
+        rowKey="order_id"
         dataSource={orders}
         pagination={pagination}
         loading={loading}
         onChange={handleTableChange}
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1500 }}
         bordered
       />
     </div>

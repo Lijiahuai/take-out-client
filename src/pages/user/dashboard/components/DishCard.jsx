@@ -11,17 +11,36 @@ const DEFAULT_SHOP_IMAGE = 'https://img.freepik.com/free-vector/restaurant-mural
 const DishCard = ({ dish }) => {
     const { cart, addToCart } = useCart();
 
+    // 根据后端数据结构调整字段访问
+    const dishId = dish.dish_id;
+    const dishName = dish.dish_name;
+    const dishDescription = dish.dish_description;
+    const dishPrice = dish.price;
+    const shopName = dish.shop_name;
+    const shopPhone = dish.phone;
+    const category = dish.category;
+    const distance = dish.distance;
+
     // 判断当前菜品是否已经在购物车中
-    const isInCart = cart.some(item => item.dish.id === dish.id);
+    const isInCart = cart.some(item => item.dish.dish_id === dishId);
 
     const handleAddToCart = () => {
         if (isInCart) {
-            message.warning(`${dish.name} 已在购物车中`);
-            return;  // 商品已经存在，不允许再次添加
+            message.warning(`${dishName} 已在购物车中`);
+            return;
         }
 
-        addToCart(dish);
-        message.success(`${dish.name} 已加入购物车`);
+        addToCart({
+            dish: {
+                id: dishId,        // 保持与现有购物车逻辑兼容
+                dish_id: dishId,   // 添加后端使用的字段
+                name: dishName,
+                price: dishPrice,
+                // 其他可能需要用到的字段...
+            },
+            quantity: 1
+        });
+        message.success(`${dishName} 已加入购物车`);
     };
 
     const formatDistance = (distance) => {
@@ -30,8 +49,8 @@ const DishCard = ({ dish }) => {
     };
 
     const handlePhoneClick = () => {
-        if (dish.phone) {
-            window.location.href = `tel:${dish.phone}`;
+        if (shopPhone) {
+            window.location.href = `tel:${shopPhone}`;
         }
     };
 
@@ -42,11 +61,11 @@ const DishCard = ({ dish }) => {
             cover={
                 <div className="image-container">
                     <img
-                        alt={dish.name}
+                        alt={dishName}
                         src={dish.image || DEFAULT_DISH_IMAGE}
                         className="dish-image"
                     />
-                    {dish.distance && <span className="distance-badge">{formatDistance(dish.distance)}</span>}
+                    {distance && <span className="distance-badge">{formatDistance(distance)}</span>}
                 </div>
             }
             actions={[
@@ -59,43 +78,42 @@ const DishCard = ({ dish }) => {
                 <Tooltip title="分享" key="share">
                     <ShareAltOutlined />
                 </Tooltip>,
-                <Tooltip title={isInCart ? `${dish.name} 已在购物车中` : "加入购物车"} key="addCart">
+                <Tooltip title={isInCart ? `${dishName} 已在购物车中` : "加入购物车"} key="addCart">
                     <ShoppingCartOutlined
                         onClick={handleAddToCart}
-                        style={{ color: isInCart ? 'gray' : 'black' }} // 如果商品在购物车中，设置为灰色
+                        style={{ color: isInCart ? 'gray' : 'black' }}
                     />
                 </Tooltip>
-
             ]}
         >
             <div className="shop-info">
-                <img src={DEFAULT_SHOP_IMAGE} alt={dish.shop_name} className="shop-image" />
+                <img src={DEFAULT_SHOP_IMAGE} alt={shopName} className="shop-image" />
                 <div className="shop-details">
-                    <h4 className="shop-name">{dish.shop_name || '未知商家'}</h4>
-                    {dish.phone && <div className="shop-phone">{dish.phone}</div>}
+                    <h4 className="shop-name">{shopName || '未知商家'}</h4>
+                    {shopPhone && <div className="shop-phone">{shopPhone}</div>}
                 </div>
             </div>
 
             <div className="dish-info">
                 <div className="dish-header">
-                    <h3 className="dish-name">{dish.name}</h3>
-                    <span className="dish-price">¥{dish.price?.toFixed(2) || '0.00'}</span>
+                    <h3 className="dish-name">{dishName}</h3>
+                    <span className="dish-price">¥{dishPrice?.toFixed(2) || '0.00'}</span>
                 </div>
 
                 <div className="dish-meta">
-                    {dish.category && (
+                    {category && (
                         <Tag color="orange" className="dish-category">
-                            {dish.category}
+                            {category}
                         </Tag>
                     )}
                 </div>
 
-                {dish.description && (
-                    <Tooltip title={dish.description} placement="bottom">
+                {dishDescription && (
+                    <Tooltip title={dishDescription} placement="bottom">
                         <div className="dish-description">
-                            {dish.description.length > 25
-                                ? `${dish.description.substring(0, 25)}...`
-                                : dish.description}
+                            {dishDescription.length > 25
+                                ? `${dishDescription.substring(0, 25)}...`
+                                : dishDescription}
                         </div>
                     </Tooltip>
                 )}

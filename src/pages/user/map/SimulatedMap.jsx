@@ -1,22 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Spin, message,Button, Popover, Slider,Carousel} from 'antd';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Spin, message, Button, Popover, Slider, Carousel } from 'antd';
 import { getNearByShops } from './api';
 import './SimulatedMap.css';
 import ShopCard from './cmponent/ShopCard';
 import ShopMarker from './cmponent/ShopMarker';
+import ShopDetail from './cmponent/ShopDetail';
 
-const DEFAULT_DISTANCE = 500; // 默认筛选距离2公里
-const SCREEN_CENTER = 500; // 屏幕中心坐标(px)
+const DEFAULT_DISTANCE = 500;
+const DEFAULT_NEARBY_SHOP_COUNT = 4;
+const MAX_DISPLAY = 50;
+const DEFAULT_MAP_SIZE = { width: 1000, height: 1000 };
 
 const SimulatedMap = () => {
-  const location = useLocation();
-  const { user } = location.state || {}; // 从路由 state 获取
-  const [userLocation] = useState(user.location);
-
-  // // 调试输出
-  // console.log('路由 state:', location.state);
-  // console.log('使用的 user:', user);
+  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  const [userLocation] = useState({ x: userInfo.data.x, y: userInfo.data.y });
 
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,18 +21,30 @@ const SimulatedMap = () => {
   const [showFilter, setShowFilter] = useState(false);
   const [shopGroups, setShopGroups] = useState([]);
 
-  // 将商家数据分组，每组5个
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResult, setSearchResult] = useState(null);
+
+  const mapRef = useRef(null);
+  const [mapSize, setMapSize] = useState(DEFAULT_MAP_SIZE);
+
+  const [selectedShopId, setSelectedShopId] = useState(null);
+
+  const handleShopClick = (shopId) => {
+    setSelectedShopId(shopId);
+    console.log(selectedShopId);
+  };
+
+
   const groupShops = (shops) => {
     const groups = [];
-    for (let i = 0; i < shops.length; i += 5) {
-      groups.push(shops.slice(i, i + 5));
+    for (let i = 0; i < shops.length; i += DEFAULT_NEARBY_SHOP_COUNT) {
+      groups.push(shops.slice(i, i + DEFAULT_NEARBY_SHOP_COUNT));
     }
     return groups;
   };
 
   const fetchNearbyShops = useCallback(async () => {
     if (!userLocation) return;
-
     try {
       setLoading(true);
       const nearbyShops = await getNearByShops(
@@ -43,7 +52,7 @@ const SimulatedMap = () => {
         userLocation.y,
         distance
       );
-      console.log('附近商家:', nearbyShops);
+
       if (!nearbyShops || nearbyShops.length === 0) {
         message.info('当前范围内没有找到商家');
         setShops([]);
@@ -51,15 +60,10 @@ const SimulatedMap = () => {
         return;
       }
 
-      // 1. 随机截取部分商家（例如最多100家）
-      const MAX_DISPLAY = 100;
       const randomlySelected = nearbyShops.length > MAX_DISPLAY
-        ? [...nearbyShops]
-          .sort(() => 0.5 - Math.random()) // 随机打乱
-          .slice(0, MAX_DISPLAY)           // 截取前100家
+        ? [...nearbyShops].sort(() => 0.5 - Math.random()).slice(0, MAX_DISPLAY)
         : nearbyShops;
 
-      // 2. 计算距离并排序
       const shopsWithDistance = randomlySelected.map(shop => {
         const dist = Math.sqrt(
           Math.pow(shop.x - userLocation.x, 2) +
@@ -70,12 +74,12 @@ const SimulatedMap = () => {
           distance: dist,
           color: dist < 1000 ? '#52c41a' : '#faad14'
         };
-      }).sort((a, b) => a.distance - b.distance); // 按距离升序排序
+      }).sort((a, b) => a.distance - b.distance);
 
       setShops(shopsWithDistance);
       setShopGroups(groupShops(shopsWithDistance));
+      setSearchResult(null);
 
-      // 3. 提示信息
       if (nearbyShops.length > MAX_DISPLAY) {
         message.info(`已随机展示${MAX_DISPLAY}家商家（共${nearbyShops.length}家）`);
       }
@@ -89,31 +93,53 @@ const SimulatedMap = () => {
     }
   }, [userLocation, distance]);
 
-
-  // 当用户位置或距离变化时重新获取商家
   useEffect(() => {
     if (userLocation) {
       fetchNearbyShops();
     }
   }, [userLocation, distance, fetchNearbyShops]);
 
-  // 坐标转换函数
+  useEffect(() => {
+    if (mapRef.current) {
+      const { offsetWidth, offsetHeight } = mapRef.current;
+      setMapSize({ width: offsetWidth, height: offsetHeight });
+    }
+  }, [distance]);
+
   const transformCoordinate = (coord) => {
-    if (!userLocation) return { x: SCREEN_CENTER, y: SCREEN_CENTER };
+    if (!userLocation) return { x: 0, y: 0 };
 
     const offsetX = coord.x - userLocation.x;
     const offsetY = coord.y - userLocation.y;
 
-    // 动态计算缩放比例，使筛选距离刚好填满屏幕
-    const scale = SCREEN_CENTER / distance;
+    const scaleX = mapSize.width / (2 * distance);
+    const scaleY = mapSize.height / (2 * distance);
 
     return {
-      x: offsetX * scale + SCREEN_CENTER,
-      y: offsetY * scale + SCREEN_CENTER
+      x: offsetX * scaleX + mapSize.width / 2,
+      y: offsetY * scaleY + mapSize.height / 2
     };
   };
 
-  // 筛选器内容
+  const renderGridLines = () => {
+    const stepMeter = 200;
+    const scaleX = mapSize.width / (2 * distance);
+    const scaleY = mapSize.height / (2 * distance);
+    const lines = [];
+
+    for (let i = -distance; i <= distance; i += stepMeter) {
+      const x = mapSize.width / 2 + i * scaleX;
+      lines.push(<div key={`v-${i}`} className="grid-line vertical" style={{ left: `${x}px`, height: '100%' }} />);
+    }
+
+    for (let i = -distance; i <= distance; i += stepMeter) {
+      const y = mapSize.height / 2 + i * scaleY;
+      lines.push(<div key={`h-${i}`} className="grid-line horizontal" style={{ top: `${y}px`, width: '100%' }} />);
+    }
+
+    return lines;
+  };
+
   const filterContent = (
     <div style={{ width: 260, padding: '10px 0' }}>
       <h4 style={{ marginBottom: 16 }}>配送范围筛选</h4>
@@ -129,20 +155,29 @@ const SimulatedMap = () => {
           2000: '2km',
           3000: '3km',
           5000: '5km',
-
         }}
       />
-      <div style={{ marginTop: 24, textAlign: 'right' }}>
-        <Button
-          type="primary"
-          size="small"
-          onClick={() => setShowFilter(false)}
-        >
-          确定
-        </Button>
-      </div>
     </div>
   );
+
+  // Automatically search whenever the searchQuery changes
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResult(null);
+      return;
+    }
+
+    const found = shops.filter(shop =>
+      shop.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    if (found.length > 0) {
+      setSearchResult(found);
+    } else {
+      setSearchResult(null);
+      message.warning('未找到相关商家');
+    }
+  }, [searchQuery, shops]);
 
   return (
     <div className="simulated-map-container">
@@ -152,32 +187,15 @@ const SimulatedMap = () => {
         </div>
       ) : (
         <div className="simulated-map">
-          {/* 地图区域 */}
-          <div className="map-background">
-            {/* 添加网格线 - 水平线 */}
-            {Array.from({ length: 21 }).map((_, i) => (
-              <div
-                key={`h-${i}`}
-                className="grid-line horizontal"
-                style={{ top: `${i * 5}%` }}
-              />
-            ))}
+          {/* 地图部分 */}
+          <div className="map-background" ref={mapRef}>
+            {renderGridLines()}
 
-            {/* 添加网格线 - 垂直线 */}
-            {Array.from({ length: 21 }).map((_, i) => (
-              <div
-                key={`v-${i}`}
-                className="grid-line vertical"
-                style={{ left: `${i * 5}%` }}
-              />
-            ))}
-
-            {/* 用户位置标记（始终在中心） */}
             <div
               className="user-marker"
               style={{
-                left: SCREEN_CENTER,
-                top: SCREEN_CENTER,
+                left: `${mapSize.width / 2}px`,
+                top: `${mapSize.height / 2}px`,
                 transform: 'translate(-50%, -50%)'
               }}
             >
@@ -186,21 +204,46 @@ const SimulatedMap = () => {
             </div>
 
             {/* 商家标记 */}
-            {shops.map((shop) => {
-              const screenCoord = transformCoordinate(shop);
-              return (
+            {searchResult && searchResult.length > 0 ? (
+              searchResult.map((shop) => (
                 <ShopMarker
                   key={shop.id}
                   shop={shop}
-                  screenCoord={screenCoord}
+                  screenCoord={transformCoordinate(shop)}
+                  onClick={() => handleShopClick(shop.id)}
                 />
-              );
-            })}
+              ))
+            ) : (
+              shops.map((shop) => {
+                const screenCoord = transformCoordinate(shop);
+                return (
+                  <ShopMarker
+                    key={shop.id}
+                    shop={shop}
+                    screenCoord={screenCoord}
+                    onClick={() => handleShopClick(shop.id)}
+                  />
+                );
+              })
+            )}
           </div>
-          {/* 商家列表区域 */}
+
+          {/* 商家列表部分 */}
           <div className="shop-list">
             <div className="shop-list-header">
               <h3>附近商家 ({shops.length})</h3>
+            </div>
+
+            {/* 搜索和筛选区域 */}
+            <div className="search-filter-container">
+              <input
+                type="text"
+                placeholder="搜索商家名称"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="shop-search-input"
+              />
+
               <Popover
                 content={filterContent}
                 title={null}
@@ -212,7 +255,7 @@ const SimulatedMap = () => {
                 <Button
                   type="primary"
                   size="small"
-                  icon={<i className="icon-filter" />}
+                  className="filter-button"
                 >
                   筛选
                 </Button>
@@ -223,16 +266,47 @@ const SimulatedMap = () => {
               当前范围: {distance >= 1000 ? `${(distance / 1000).toFixed(1)}公里` : `${distance}米`}
             </div>
 
+            {/* 商家卡片轮播 */}
             <Carousel autoplay dots={true}>
-              {shopGroups.map((group, index) => (
-                <div key={index} className="shop-group">
-                  {group.map(shop => (
-                    <ShopCard key={shop.id || `${shop.name}-${shop.x}-${shop.y}`} shop={shop} />
+              {searchResult ? (
+                <div className="shop-group">
+                  {searchResult.map(shop => (
+                    <ShopCard
+                      key={shop.id || `${shop.name}-${shop.x}-${shop.y}`}
+                      shop={shop}
+                      onClick={() => handleShopClick(shop.id)}
+                    />
                   ))}
                 </div>
-              ))}
+              ) : (
+                shopGroups.map((group, index) => (
+                  <div key={index} className="shop-group">
+                    {group.map(shop => (
+                      <ShopCard
+                        key={shop.id || `${shop.name}-${shop.x}-${shop.y}`}
+                        shop={shop}
+                        onClick={() => handleShopClick(shop.id)}
+                      />
+                    ))}
+                  </div>
+                ))
+              )}
             </Carousel>
           </div>
+
+          {/* 新增的商家详情区域 */}
+          {selectedShopId && (
+            <div className="shop-detail-panel">
+              <Button
+                type="text"
+                onClick={() => setSelectedShopId(null)}
+                className="close-detail-button"
+              >
+                ×
+              </Button>
+              <ShopDetail shopId={selectedShopId} />
+            </div>
+          )}
         </div>
       )}
     </div>

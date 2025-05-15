@@ -2,7 +2,7 @@ import React from 'react';
 import './ShopMarker.css';
 import { Tooltip } from 'antd';
 
-const ShopMarker = ({ shop, screenCoord }) => {
+const ShopMarker = ({ shop, screenCoord, onClick }) => {
   return (
     <div
       className="shop-marker"
@@ -10,6 +10,7 @@ const ShopMarker = ({ shop, screenCoord }) => {
         left: `${screenCoord.x}px`,
         top: `${screenCoord.y}px`,
       }}
+      onClick={() => onClick(shop.id)}
     >
       <Tooltip
         title={
