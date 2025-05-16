@@ -1,4 +1,3 @@
-const API_BASE = 'http://localhost:8080/admin/dishes';
 
 const handleResponse = async (response) => {
     if (!response.ok) {
@@ -11,9 +10,9 @@ const handleResponse = async (response) => {
 export const getAllDish = async (params = {}) => {
     try {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        if (!userInfo || !userInfo.username) throw new Error('用户未登录');
+        if (!userInfo) throw new Error('请重新登录');
 
-        const res = await fetch(`http://localhost:8080/admin/dish/getAllDish?username=${userInfo.username}`);
+        const res = await fetch(`http://localhost:8080/admin/dish/getAllDish?admin_id=${userInfo.data.admin_id}`);
 
         if (!res.ok) throw new Error('请求失败');
 
@@ -35,6 +34,7 @@ export const getAllDish = async (params = {}) => {
 
 
 export const updateDish = async (dishData) => {
+    console.log('需要更新的dishData', dishData);
     const response = await fetch(`http://localhost:8080/admin/dish/updateDish`, {
         method: 'POST',
         headers: {
@@ -47,9 +47,10 @@ export const updateDish = async (dishData) => {
 };
 
 export const createDish = async (dishData) => {
-    // 获取本地存储的用户名
-    const username = localStorage.getItem('username'); // 获取存储的用户名
-    const response = await fetch(`http://localhost:8080/admin/dish/addDish?username=${encodeURIComponent(username)}`, {
+    console.log('dishData', dishData);
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+    if (!userInfo) throw new Error('请重新登录');
+    const response = await fetch(`http://localhost:8080/admin/dish/addDish?admin_id=${userInfo.data.admin_id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -61,28 +62,3 @@ export const createDish = async (dishData) => {
     return handleResponse(response);
 };
 
-
-export const getDishById = async (id) => {
-    const response = await fetch(`${API_BASE}/${id}`);
-    return handleResponse(response);
-};
-
-export const deleteDish = async (dishId) => {
-    const response = await fetch(`http://localhost:8080/admin/dish/deleteDish?id=${dishId}`, {
-        method: 'DELETE',
-    });
-    return handleResponse(response);
-};
-
-
-
-export const toggleDishStatus = async (id, status) => {
-    const response = await fetch(`${API_BASE}/${id}/status`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status }),
-    });
-    return handleResponse(response);
-};

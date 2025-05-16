@@ -6,25 +6,20 @@ export const settlement = async (cartData) => {
             throw new Error('用户信息缺失，请重新登录');
         }
 
-        // 注意：根据您之前的说明，用户ID存储在 userInfo.data.user_id
-        const userId = userInfo.data.user_id;
-        
-        const payload = {
-            user: {
-                user_id: userId,  // 使用从userInfo中提取的正确ID
-            },
-            dishes: cartData.map(item => ({
-                dish_id: item.dish.id,
-            }))
-        };
-
         const response = await fetch('http://localhost:8080/user/cart/settlement', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                data: cartData,
+                user: userInfo.data
+            })
         });
+        console.log("结算请求发送:", {
+            data: cartData,
+            user: userInfo.data
+        })
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => null);
@@ -37,9 +32,32 @@ export const settlement = async (cartData) => {
         }
 
         return await response.json();
-        
+
     } catch (error) {
         console.error('结算过程中出错:', error);
         throw error; // 继续抛出错误由调用方处理
     }
+};
+// components/api.js
+export const getDishDetailsByIds = async (cart) => {
+    try {
+        const res = await fetch('http://localhost:8080/user/cart/getDishDetailsByIds', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cart)
+
+        });
+
+        if (!res.ok) {
+            throw new Error('请求失败');
+        }
+
+        return res.json();
+    } catch (error) {
+        console.error('获取菜品详情失败:', error);
+        throw error;
+    }
+
 };

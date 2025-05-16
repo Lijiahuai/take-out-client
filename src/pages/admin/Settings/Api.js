@@ -1,23 +1,7 @@
-// api.js - 管理员相关API接口
-const API_BASE_URL = 'http://localhost:8080';
 
-/**
- * 获取管理员详细信息
- * @param {number} adminId 
- * @returns {Promise<{
- *   id: number,
- *   admin_id: number,
- *   shop_name: string,
- *   x_coord: number,
- *   y_coord: number,
- *   phone: string,
- *   description: string,
- *   logo_url: string,
- *   update_time: string
- * }>}*/
 export const getAdminInfo = async (adminId) => {
   try {
-    const res = await fetch(`${API_BASE_URL}/admin/info/getInfo?adminId=${adminId}`, {
+    const res = await fetch(`http://localhost:8080/admin/info/getInfo?adminId=${adminId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -38,36 +22,18 @@ export const getAdminInfo = async (adminId) => {
   }
 };
 
-/**
- * 更新管理员信息
- * @param {number} adminId 
- * @param {{
-*   shop_name?: string,
-*   x_coord?: number,
-*   y_coord?: number,
-*   phone?: string,
-*   description?: string,
-*   logo_url?: string,
-*   update_time?: string
-* }} data 
-* @returns {Promise<{ success: boolean }>}
-*/
-export const updateAdminInfo = async (adminId, data) => {
+export const updateAdminInfo = async (data) => {
   try {
-    // 构造符合后端AdminInfo对象结构的请求体
-    const requestBody = {
-      admin_id: adminId,  // 确保包含admin_id字段
-      ...data
-    };
+    console.log("更新管理员信息请求体:",data);
 
-    const res = await fetch(`${API_BASE_URL}/admin/info/updateInfo`, {
+    const res = await fetch(`http://localhost:8080/admin/info/updateInfo`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestBody)  // 传递完整对象
+      body: JSON.stringify(data)  // 传递完整对象
     });
-
+    console.log(res);
     // 增强错误处理
     if (!res.ok) {
       const errorText = await res.text();

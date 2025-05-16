@@ -9,51 +9,28 @@ const AdminInfoEditor = ({ onSuccess }) => {
   const [form] = Form.useForm();
   const [fileList, setFileList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [adminId, setAdminId] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [adminData, setAdminData] = useState(null);
-
-  // 初始化时从 localStorage 获取 adminId
-  useEffect(() => {
-    const storedAdminId = localStorage.getItem('id');
-    if (storedAdminId) {
-      setAdminId(parseInt(storedAdminId));
-    } else {
-      showNotification('未找到商家ID，请重新登录', 'error');
-    }
-  }, []);
-
   // 获取商家数据
   useEffect(() => {
     const fetchAdminData = async () => {
-      if (!adminId) return;
-
-      try {
-        const data = await getAdminInfo(adminId);
-        setAdminData(data);
-        form.setFieldsValue(data);
-
-        if (data.logo_url) {
-          setFileList([{
-            uid: '-1',
-            name: 'logo',
-            status: 'done',
-            url: data.logo_url,
-          }]);
-        }
-      } catch (error) {
-        showNotification('获取商家数据失败', 'error');
+      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+      console.log("商家信息：", userInfo.data);
+      if (!userInfo || !userInfo.data) {
+        showNotification('请重新登录', 'error');
+        return;
       }
+      const data = await getAdminInfo(userInfo.data.admin_id);
+      console.log("商家数据：", data);
+      setAdminData(data);
+      form.setFieldsValue(data); // 同步初始表单数据
     };
-
     fetchAdminData();
-  }, [adminId, form]);
+  }, [form]);
 
   const handleUpload = async (file) => {
-    // 文件上传逻辑
-    // 返回上传后的URL
-  };
 
+  }
   const handleEdit = () => {
     setIsEditing(true);
   };
@@ -64,6 +41,7 @@ const AdminInfoEditor = ({ onSuccess }) => {
   };
 
   const onFinish = async (values) => {
+    console.log("表单数据：", values);
     setLoading(true);
     try {
       let logoUrl = values.logo_url;
@@ -73,12 +51,13 @@ const AdminInfoEditor = ({ onSuccess }) => {
       }
 
       const updatedData = {
+        admin_id: adminData.admin_id,
         ...values,
         logo_url: logoUrl,
         update_time: new Date().toISOString()
       };
 
-      const res = await updateAdminInfo(adminId, updatedData);
+      const res = await updateAdminInfo(updatedData);
       if (res) {
         setAdminData(updatedData);
         showNotification('商家信息更新成功', 'success');
@@ -87,13 +66,13 @@ const AdminInfoEditor = ({ onSuccess }) => {
       } else {
         showNotification('商家信息更新失败,请检查是否设置了不合理的数据', 'error');
       }
-
     } catch (error) {
       showNotification('更新失败: ' + error.message, 'error');
     } finally {
       setLoading(false);
     }
   };
+
 
   if (!adminData) {
     return <div>加载商家信息中...</div>;
@@ -116,7 +95,7 @@ const AdminInfoEditor = ({ onSuccess }) => {
               X: {adminData.x_coord}, Y: {adminData.y_coord}
             </Descriptions.Item>
             <Descriptions.Item label="联系电话">{adminData.phone || '未设置'}</Descriptions.Item>
-            <Descriptions.Item label="店铺描述">{adminData.description || '未设置'}</Descriptions.Item>
+            <Descriptions.Item label="店铺描述">{adminData.shop_description || '未设置'}</Descriptions.Item>
             <Descriptions.Item label="店铺Logo" span={2}>
               {adminData.logo_url ? (
                 <img
@@ -180,7 +159,7 @@ const AdminInfoEditor = ({ onSuccess }) => {
           </Form.Item>
 
           <Form.Item
-            name="description"
+            name="shop_description"
             label="店铺描述"
           >
             <Input.TextArea rows={4} placeholder="请输入店铺描述信息" />

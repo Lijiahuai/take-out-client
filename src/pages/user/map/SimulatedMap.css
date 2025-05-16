@@ -185,6 +185,7 @@ body,
 .slick-dots li button:before {
   font-size: 10px !important;
 }
+
 /* 商家详情面板样式 */
 .shop-detail-panel {
   position: fixed;
@@ -218,4 +219,16 @@ body,
     bottom: 0;
     top: auto;
   }
+}
+
+.search-input-wrapper {
+  position: relative;
+  flex-grow: 1;
+}
+
+.search-spinner {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }

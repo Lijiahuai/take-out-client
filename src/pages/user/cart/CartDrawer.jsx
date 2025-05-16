@@ -1,29 +1,52 @@
-import React from 'react';
-import { Drawer, List, Avatar, Button, Divider, Typography, Space } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
 import { useCart } from '../context/CartContext';
-import { settlement } from './api';
-import { showNotification } from '../../../components/ui/Notification'; // 导入自定义通知组件
+import { settlement, getDishDetailsByIds } from './api';
+import { showNotification } from '../../../components/ui/Notification';
+import './CartDrawer.css'
+import { Drawer, Spin, Empty, List, Tag, Typography, Button } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
+
+const { Text } = Typography;
+
 
 const CartDrawer = ({ visible, onClose }) => {
   const { cart, removeFromCart, clearCart } = useCart();
+  const [dishes, setDishes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const totalPrice = cart.reduce((total, item) => total + item.dish.price, 0);
+  useEffect(() => {
+    const fetchDetails = async () => {
+      if (!visible || cart.length === 0) {
+        setDishes([]);
+        return;
+      }
+      setLoading(true);
+      try {
+        const data = await getDishDetailsByIds(cart);
+        setDishes(data);
+      } catch (error) {
+        showNotification('加载商品信息失败', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetails();
+  }, [visible, cart]);
+
+  const totalPrice = dishes.reduce((total, item) => total + item.price, 0);
 
   const handleCheckout = async () => {
     if (cart.length === 0) {
       showNotification("购物车为空", "warning");
       return;
     }
-
     try {
-      const result = await settlement(cart);
+      await settlement(cart);
       showNotification("结算成功！", "success");
       clearCart();
-      onClose(); // 可选：关闭购物车抽屉
-    } catch (err) {
+      onClose();
+    } catch {
       showNotification("结算失败，请稍后重试", "error");
-      console.error(err);
     }
   };
 
@@ -31,43 +54,72 @@ const CartDrawer = ({ visible, onClose }) => {
     <Drawer
       title="购物车"
       placement="right"
-      closable={true}
       onClose={onClose}
-      open={visible}
-      width={460}
+      visible={visible}
+      width={480}
+      className="cart-drawer"
+      bodyStyle={{ padding: '0 24px 24px' }}
     >
-      {cart.length === 0 ? (
-        <Typography.Text>您的购物车是空的。</Typography.Text>
+      {loading ? (
+        <div className="loading-container">
+          <Spin size="large" />
+        </div>
       ) : (
         <>
-          <List
-            itemLayout="horizontal"
-            dataSource={cart}
-            renderItem={(item) => (
-              <List.Item
-                actions={[<DeleteOutlined key="delete" onClick={() => removeFromCart(item.dish.id)} />]}
-              >
-                <List.Item.Meta
-                  avatar={<Avatar src={item.dish.image} />}
-                  title={item.dish.name}
-                  description={`¥${item.dish.price.toFixed(2)}`}
-                />
-              </List.Item>
-            )}
-          />
-          <Divider />
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-            <strong>总计：</strong>
-            <span>¥${totalPrice.toFixed(2)}</span>
-          </div>
-          <Space style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button danger onClick={clearCart}>
-              清空
-            </Button>
-            <Button type="primary" onClick={handleCheckout}>
-              去结算
-            </Button>
-          </Space>
+          {dishes.length === 0 ? (
+            <div className="empty-cart">
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="购物车空空如也" />
+            </div>
+          ) : (
+            <>
+              <List
+                itemLayout="horizontal"
+                dataSource={dishes}
+                renderItem={item => (
+                  <List.Item className="cart-item">
+                    <div className="dish-content">
+                      <div className="dish-image" />
+                      <div className="dish-info">
+                        <Typography.Text strong>{item.dish_name}</Typography.Text>
+                        <Typography.Text type="secondary" className="dish-desc">
+                          {item.dish_description}
+                        </Typography.Text>
+                        <div className="dish-meta">
+                          <Tag color="blue">{item.category}</Tag>
+                          <Typography.Text type="danger" strong>
+                            ¥{item.price.toFixed(2)}
+                          </Typography.Text>
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      type="text"
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => removeFromCart(item.dish_id)}
+                    />
+                  </List.Item>
+                )}
+              />
+              <div className="cart-footer">
+                <div className="total-price">
+                  总计：
+                  <Typography.Text strong type="danger" style={{ fontSize: 20 }}>
+                    ¥{totalPrice.toFixed(2)}
+                  </Typography.Text>
+                </div>
+                <Button
+                  type="primary"
+                  size="large"
+                  block
+                  onClick={handleCheckout}
+                  style={{ marginTop: 16 }}
+                >
+                  立即结算
+                </Button>
+              </div>
+            </>
+          )}
         </>
       )}
     </Drawer>

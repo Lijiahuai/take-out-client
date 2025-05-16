@@ -146,7 +146,7 @@ const UserHome = () => {
         width={220}
       >
         <div className="logo" onClick={() => navigate('/user')}>
-          {collapsed ? 'LOGO' : '家怀外卖'}
+          {collapsed ? 'LOGO' : '家怀用餐系统'}
         </div>
         <Menu
           theme="dark"

@@ -13,7 +13,7 @@ import {
     ProfileOutlined,
     SettingFilled
 } from '@ant-design/icons';
-import './style/AdminHome.css'; // 引入自定义样式
+import './AdminHome.css'; // 引入自定义样式
 
 const { Header, Sider, Content } = Layout;
 

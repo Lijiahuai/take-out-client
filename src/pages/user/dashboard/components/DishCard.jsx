@@ -21,25 +21,15 @@ const DishCard = ({ dish }) => {
     const category = dish.category;
     const distance = dish.distance;
 
-    // 判断当前菜品是否已经在购物车中
-    const isInCart = cart.some(item => item.dish.dish_id === dishId);
+    const isInCart = cart.some(item => item.id === dishId);
+
 
     const handleAddToCart = () => {
         if (isInCart) {
             message.warning(`${dishName} 已在购物车中`);
             return;
         }
-
-        addToCart({
-            dish: {
-                id: dishId,        // 保持与现有购物车逻辑兼容
-                dish_id: dishId,   // 添加后端使用的字段
-                name: dishName,
-                price: dishPrice,
-                // 其他可能需要用到的字段...
-            },
-            quantity: 1
-        });
+        addToCart(dish.dish_id);
         message.success(`${dishName} 已加入购物车`);
     };
 

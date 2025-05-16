@@ -1,63 +1,200 @@
-/* ShopDetail.css */
-.shop-detail-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
+/* 基础样式 */
+.shop-detail-container {
+    padding: 16px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.loading-container,
+.error-container {
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 300px;
 }
 
-.shop-detail-content {
-    background: white;
+/* 商家头部信息 */
+.shop-header {
+    margin-bottom: 20px;
+}
+
+.shop-basic-info {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.shop-logo {
+    width: 120px;
+    height: 120px;
     border-radius: 8px;
-    width: 80%;
-    max-width: 600px;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-    padding: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    z-index: 1001;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-}
-
-.ant-card {
-    width: 100%;
-}
-
-.ant-card-cover img {
-    height: 200px;
     object-fit: cover;
 }
 
-.ant-card-body p {
-    margin-bottom: 12px;
+.shop-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.shop-info h1 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+.description {
+    color: #666;
+    margin: 10px 0;
     font-size: 14px;
 }
 
-.ant-card-body strong {
-    color: #333;
-    margin-right: 8px;
+.meta-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    color: #888;
+    font-size: 14px;
+}
+
+.meta-info span {
+    white-space: nowrap;
+}
+
+/* 分类标签 */
+.category-tabs-container {
+    margin-bottom: 20px;
+}
+
+.category-tabs-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.category-tab {
+    white-space: nowrap;
+}
+
+/* 菜品展示 */
+.dishes-container {
+    margin-top: 20px;
+}
+
+.dish-card {
+    margin-bottom: 16px;
+    height: 100%;
+}
+
+.dish-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.dish-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+}
+
+.price {
+    font-weight: bold;
+    color: #ff4d4f;
+    font-size: 16px;
+    margin: 8px 0;
+}
+
+.add-to-cart-btn {
+    margin-top: 12px;
+    width: 100%;
+}
+
+.empty-dishes {
+    text-align: center;
+    padding: 40px;
+    color: #888;
 }
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .shop-detail-content {
-        width: 95%;
-        max-height: 90vh;
+    .shop-basic-info {
+        flex-direction: column;
+    }
+
+    .shop-logo {
+        width: 100%;
+        height: auto;
+        max-height: 200px;
+    }
+
+    .category-tab {
+        font-size: 12px;
+        padding: 0 8px;
+    }
+}
+
+/* 商家信息样式 */
+.shop-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.shop-info h1 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 8px 0;
+    font-size: 16px;
+}
+
+.description {
+    color: #666;
+    margin: 10px 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* 元信息样式 */
+.meta-info {
+    margin-top: 12px;
+}
+
+.meta-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.meta-info-item {
+    display: inline-block;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .meta-info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .meta-info-item {
+        font-size: 13px;
     }
 }

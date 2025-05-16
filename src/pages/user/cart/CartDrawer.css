@@ -1,0 +1,78 @@
+.cart-drawer .ant-drawer-header {
+  border-bottom: none;
+  padding: 24px;
+}
+
+.cart-drawer .ant-drawer-body {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.empty-cart {
+  padding: 40px 0;
+}
+
+.cart-item {
+  padding: 16px 0 !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.cart-item .dish-content {
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+
+.dish-image {
+  width: 80px;
+  height: 80px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin-right: 16px;
+}
+
+.dish-info {
+  flex: 1;
+}
+
+.dish-desc {
+  display: block;
+  font-size: 12px;
+  color: #999;
+  margin: 4px 0;
+}
+
+.dish-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.cart-footer {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 24px 0;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.total-price {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
+
+.ant-tag-blue {
+  color: #1890ff;
+  background: #e6f7ff;
+  border-color: #91d5ff;
+}

@@ -1,204 +1,164 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, Space, Tag, Popconfirm, message, Badge, Input } from 'antd';
-import { SearchOutlined, EyeOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
-import { getOrders, deleteOrder } from './OrderApi';
+import React, { useEffect, useState } from 'react';
+import { Table, Tag, message, Space, Select } from 'antd';
+import { getOrders } from './OrderApi';
+import {
+    ClockCircleOutlined,
+    CheckCircleOutlined,
+    CloseCircleOutlined
+} from '@ant-design/icons';
+import dayjs from 'dayjs';
+import './OrderList.css';
 
 const OrderList = () => {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 10,
-    total: 0,
-  });
-  const [searchText, setSearchText] = useState('');
-  const navigate = useNavigate();
+    // 定义订单列表的状态
+    const [orders, setOrders] = useState([]);
+    // 定义筛选后的订单列表的状态
+    const [filteredOrders, setFilteredOrders] = useState([]);
+    // 定义加载状态
+    const [loading, setLoading] = useState(false);
+    const [statusFilter, setStatusFilter] = useState('all');
 
-  const fetchOrders = async (params = {}) => {
-    setLoading(true);
-    try {
-      const { data } = await getOrders({
-        page: params.pagination?.current || pagination.current,
-        pageSize: params.pagination?.pageSize || pagination.pageSize,
-        search: searchText,
-        ...params,
-      });
-      setOrders(data.list);
-      setPagination({
-        ...pagination,
-        total: data.total,
-        current: data.page,
-      });
-    } catch (error) {
-      message.error('获取订单列表失败');
-    } finally {
-      setLoading(false);
-    }
-  };
+    // 根据订单状态返回对应的标签
+    const getStatusTag = (status) => {
+        const statusMap = {
+            0: {
+                text: '待支付',
+                color: 'orange',
+                icon: <ClockCircleOutlined />
+            },
+            1: {
+                text: '已支付',
+                color: 'blue',
+                icon: <ClockCircleOutlined />
+            },
+            2: {
+                text: '配送中',
+                color: 'geekblue',
+                icon: <ClockCircleOutlined />
+            },
+            3: {
+                text: '已完成',
+                color: 'green',
+                icon: <CheckCircleOutlined />
+            },
+            4: {
+                text: '已取消',
+                color: 'red',
+                icon: <CloseCircleOutlined />
+            },
+        };
 
-  useEffect(() => {
-    fetchOrders();
-  }, [searchText]);
+        const s = statusMap[status] || {
+            text: '未知',
+            color: 'gray',
+            icon: <ClockCircleOutlined />
+        };
 
-  const handleTableChange = (newPagination, filters, sorter) => {
-    fetchOrders({
-      pagination: newPagination,
-      sortField: sorter.field,
-      sortOrder: sorter.order,
-      ...filters,
-    });
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteOrder(id);
-      message.success('删除成功');
-      fetchOrders();
-    } catch (error) {
-      message.error('删除失败');
-    }
-  };
-
-  const getStatusTag = (status) => {
-    const statusMap = {
-      0: { text: '待支付', color: 'orange' },
-      1: { text: '已支付', color: 'blue' },
-      2: { text: '配送中', color: 'geekblue' },
-      3: { text: '已完成', color: 'green' },
-      4: { text: '已取消', color: 'red' },
+        return (
+            <Tag
+                className="status-tag"
+                color={s.color}
+                icon={s.icon}
+            >
+                {s.text}
+            </Tag>
+        );
     };
-    return <Tag color={statusMap[status]?.color || 'default'}>{statusMap[status]?.text || '未知'}</Tag>;
-  };
 
-  const columns = [
-    {
-      title: '订单ID',
-      dataIndex: 'order_id',
-      key: 'order_id',
-      width: 100,
-      sorter: true,
-    },
-    {
-      title: '用户信息',
-      key: 'user_info',
-      render: (_, record) => (
-        <div>
-          <div>{record.real_name}</div>
-          <div>{record.phone}</div>
-        </div>
-      ),
-    },
-    {
-      title: '配送地址',
-      key: 'address',
-      render: (_, record) => (
-        <div>
-          <div>坐标: ({record.x}, {record.y})</div>
-          {record.remark && <div>备注: {record.remark}</div>}
-        </div>
-      ),
-    },
-    {
-      title: '用户ID',
-      dataIndex: 'user_id',
-      key: 'user_id',
-      width: 100,
-    },
-    {
-      title: '总金额',
-      dataIndex: 'total_price',
-      key: 'total_price',
-      render: (price) => `¥${price?.toFixed(2) || '0.00'}`,
-      sorter: (a, b) => (a.total_price || 0) - (b.total_price || 0),
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-      render: getStatusTag,
-      filters: [
-        { text: '待支付', value: 0 },
-        { text: '已支付', value: 1 },
-        { text: '配送中', value: 2 },
-        { text: '已完成', value: 3 },
-        { text: '已取消', value: 4 },
-      ],
-      filterMultiple: false,
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'create_time',
-      key: 'create_time',
-      render: (time) => time ? new Date(time).toLocaleString() : '-',
-      sorter: (a, b) => new Date(a.create_time || 0) - new Date(b.create_time || 0),
-    },
-    {
-      title: '操作',
-      key: 'action',
-      fixed: 'right',
-      width: 180,
-      render: (_, record) => (
-        <Space size="middle">
-          <Button
-            type="primary"
-            icon={<EyeOutlined />}
-            onClick={() => navigate(`/admin/orders/detail/${record.order_id}`)}
-          >
-            详情
-          </Button>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => navigate(`/admin/orders/edit/${record.order_id}`)}
-          >
-            编辑
-          </Button>
-          <Popconfirm
-            title="确定要删除此订单吗？"
-            onConfirm={() => handleDelete(record.order_id)}
-            okText="确定"
-            cancelText="取消"
-          >
-            <Button danger icon={<DeleteOutlined />}>
-              删除
-            </Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
-  ];
+    // 获取订单列表
+    const fetchOrders = async () => {
+        setLoading(true);
+        try {
+            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+            const orderData = await getOrders(userInfo.data.admin_id)
+            console.log("订单列表",orderData);
+            setOrders(orderData);
+            setFilteredOrders(orderData);
+        } catch (err) {
+            message.error('加载订单失败');
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <div className="p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">订单管理</h2>
-        <div className="flex space-x-4">
-          <Input
-            placeholder="搜索订单ID、用户ID或姓名"
-            prefix={<SearchOutlined />}
-            style={{ width: 300 }}
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            allowClear
-          />
-          <Button type="primary" onClick={() => navigate('/admin/orders/create')}>
-            创建订单
-          </Button>
-        </div>
-      </div>
+    // 组件挂载时获取订单列表
+    useEffect(() => {
+        fetchOrders();
+    }, []);
 
-      <Table
-        columns={columns}
-        rowKey="order_id"
-        dataSource={orders}
-        pagination={pagination}
-        loading={loading}
-        onChange={handleTableChange}
-        scroll={{ x: 1500 }}
-        bordered
-      />
-    </div>
-  );
+    // 监听筛选状态变化，更新筛选后的订单列表
+    useEffect(() => {
+        if (statusFilter === 'all') {
+            setFilteredOrders(orders);
+        } else {
+            setFilteredOrders(orders.filter(order => order.status === parseInt(statusFilter)));
+        }
+    }, [statusFilter, orders]);
+
+    // 定义表格列
+    const columns = [
+        { title: '订单号', dataIndex: 'order_id', key: 'order_id' },
+        { title: '用户姓名', dataIndex: 'real_name', key: 'real_name' },
+        { title: '联系电话', dataIndex: 'phone', key: 'phone' },
+        {
+            title: '地址坐标',
+            key: 'location',
+            render: (_, record) => `(${record.x}, ${record.y})`
+        },
+        { title: '菜品', dataIndex: 'dish_name', key: 'dish_name' },
+        {
+            title: '价格',
+            dataIndex: 'price',
+            key: 'price',
+            render: (v) => <span className="price-cell">￥{v}</span>
+        },
+        {
+            title: '备注',
+            dataIndex: 'remark',
+            key: 'remark',
+            render: (v) => v || <span className="empty-text">-</span>
+        },
+        {
+            title: '状态',
+            dataIndex: 'status',
+            key: 'status',
+            render: (status) => getStatusTag(status)
+        },
+        {
+            title: '下单时间',
+            dataIndex: 'create_time',
+            key: 'create_time',
+            render: (t) => dayjs(t).format('YYYY-MM-DD HH:mm:ss')
+        }
+    ];
+
+    return (
+        <div className="order-list-container">
+            <div className="filter-section">
+                <span>订单状态筛选：</span>
+                <Select
+                    value={statusFilter}
+                    onChange={(value) => setStatusFilter(value)}
+                >
+                    <Select.Option value="all">全部</Select.Option>
+                    <Select.Option value="0">待支付</Select.Option>
+                    <Select.Option value="1">已支付</Select.Option>
+                    <Select.Option value="2">配送中</Select.Option>
+                    <Select.Option value="3">已完成</Select.Option>
+                    <Select.Option value="4">已取消</Select.Option>
+                </Select>
+            </div>
+
+            <Table
+                className="order-table"
+                dataSource={filteredOrders}
+                columns={columns}
+                rowKey="order_id"
+                loading={loading}
+                pagination={{ pageSize: 10 }}
+            />
+        </div>
+    );
 };
 
 export default OrderList;

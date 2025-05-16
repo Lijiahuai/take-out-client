@@ -1,0 +1,98 @@
+/* DishForm Modal Styles */
+.dish-form-modal .ant-modal-content {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.dish-form-modal .ant-modal-header {
+    background-color: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 16px 24px;
+}
+
+.dish-form-modal .ant-modal-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.dish-form-modal .ant-modal-body {
+    padding: 24px;
+}
+
+.dish-form-modal .ant-modal-footer {
+    border-top: 1px solid #f0f0f0;
+    padding: 16px 24px;
+}
+
+/* Form Item Styles */
+.dish-form-item .ant-form-item-label {
+    padding-bottom: 4px;
+}
+
+.dish-form-item .ant-form-item-label > label {
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 500;
+}
+
+.dish-form-item .ant-input,
+.dish-form-item .ant-input-number,
+.dish-form-item .ant-select-selector,
+.dish-form-item .ant-input-textarea {
+    border-radius: 4px;
+    border-color: #d9d9d9;
+}
+
+.dish-form-item .ant-input:focus,
+.dish-form-item .ant-input-number:focus,
+.dish-form-item .ant-select-focused .ant-select-selector,
+.dish-form-item .ant-input-textarea:focus {
+    border-color: #40a9ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.dish-form-item .ant-input-number {
+    width: 100%;
+}
+
+.dish-form-item .ant-select {
+    width: 100%;
+}
+
+/* Button Styles */
+.dish-form-modal .ant-btn {
+    border-radius: 4px;
+    font-weight: 400;
+    padding: 0 16px;
+    height: 32px;
+}
+
+.dish-form-modal .ant-btn-primary {
+    background-color: #1890ff;
+    border-color: #1890ff;
+}
+
+.dish-form-modal .ant-btn-primary:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+}
+
+.dish-form-modal .ant-btn-default {
+    border-color: #d9d9d9;
+}
+
+.dish-form-modal .ant-btn-default:hover {
+    color: #40a9ff;
+    border-color: #40a9ff;
+}
+
+/* Responsive Styles */
+@media (max-width: 576px) {
+    .dish-form-modal .ant-modal {
+        max-width: calc(100vw - 32px);
+    }
+    
+    .dish-form-modal .ant-modal-body {
+        padding: 16px;
+    }
+}
