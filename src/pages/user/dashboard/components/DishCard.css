@@ -1,119 +1,176 @@
 /* DishCard.css */
 
+/* 整体卡片容器 */
 .dish-card {
-    width: 280px;
-    margin: 0 12px;
-    border-radius: 8px;
+    width: 100%;
+    max-width: 380px;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.dish-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* 图片容器 */
 .image-container {
     position: relative;
-    height: 160px;
+    padding-top: 65%;
+    /* 保持图片比例 */
+    background: #f5f5f5;
 }
 
 .dish-image {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
-.distance-badge {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 12px;
+.dish-card:hover .dish-image {
+    transform: scale(1.03);
 }
 
+/* 店铺信息 */
 .shop-info {
     display: flex;
     align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #f0f0f0;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    padding: 8px;
+    background: rgba(245, 245, 245, 0.8);
+    border-radius: 8px;
 }
 
 .shop-image {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
+    margin-right: 12px;
     object-fit: cover;
-    margin-right: 10px;
-}
-
-.shop-details {
-    flex: 1;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .shop-name {
     margin: 0;
     font-size: 14px;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.shop-phone {
+    font-weight: 600;
     color: #666;
-    font-size: 12px;
 }
 
+/* 菜品信息 */
 .dish-info {
-    padding: 0 4px;
+    padding: 0 8px;
 }
 
 .dish-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    align-items: baseline;
+    margin-bottom: 12px;
 }
 
 .dish-name {
     margin: 0;
-    font-size: 16px;
-    font-weight: 500;
-    flex: 1;
-    white-space: nowrap;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    max-width: 70%;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .dish-price {
+    font-size: 20px;
+    font-weight: 700;
     color: #ff4d4f;
-    font-weight: bold;
-    margin-left: 8px;
 }
 
+/* 元数据 */
 .dish-meta {
-    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px 0;
 }
 
 .dish-category {
-    margin-right: 8px;
+    font-size: 12px !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
 }
 
+.dish-stats {
+    display: flex;
+    gap: 16px;
+    color: #666;
+}
+
+.dish-stats .anticon {
+    margin-right: 4px;
+    font-size: 14px;
+}
+
+/* 描述文字 */
 .dish-description {
-    color: #888;
-    font-size: 13px;
+    color: #666;
+    font-size: 14px;
     line-height: 1.4;
+    margin-top: 8px;
+    padding: 8px;
+    background: #f8f8f8;
+    border-radius: 6px;
+    transition: all 0.2s ease;
     cursor: pointer;
 }
 
+.dish-description:hover {
+    background: #f0f0f0;
+}
+
+/* 操作按钮 */
 .ant-card-actions {
-    background: #fafafa;
+    background: #fff !important;
+    border-top: 1px solid #f0f0f0 !important;
 }
 
 .ant-card-actions>li {
-    margin: 8px 0;
-    text-align: center;
+    margin: 12px 0 !important;
+    padding: 0 16px !important;
 }
 
-.ant-card-actions>li>span:hover {
-    color: #1890ff;
+.ant-card-actions .anticon {
+    font-size: 18px !important;
+    transition: all 0.2s ease;
+}
+
+.ant-card-actions .anticon:hover {
+    color: #ff7a45 !important;
+    transform: scale(1.1);
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .dish-card {
+        border-radius: 12px !important;
+    }
+
+    .dish-name {
+        font-size: 16px;
+    }
+
+    .dish-price {
+        font-size: 18px;
+    }
+
+    .shop-info {
+        padding: 6px;
+    }
 }

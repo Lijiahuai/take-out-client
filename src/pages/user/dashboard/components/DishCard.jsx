@@ -1,9 +1,15 @@
-// src/components/DishCard.jsx
 import React from 'react';
 import { Card, Tag, Tooltip, message } from 'antd';
+import {
+    HeartOutlined,
+    ShareAltOutlined,
+    ShoppingCartOutlined,
+    LikeOutlined,
+    EyeOutlined
+} from '@ant-design/icons';
 import { useCart } from '../../context/CartContext';
-import { PhoneOutlined, HeartOutlined, ShareAltOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 import './DishCard.css';
+import { likeDish, favoriteDish } from '../api.js'; // 假设 API 方法放在 api.js 中
 
 const DEFAULT_DISH_IMAGE = 'https://img.freepik.com/free-photo/top-view-table-full-delicious-food-composition_23-2149141352.jpg';
 const DEFAULT_SHOP_IMAGE = 'https://img.freepik.com/free-vector/restaurant-mural-wallpaper_23-2148703851.jpg';
@@ -11,36 +17,46 @@ const DEFAULT_SHOP_IMAGE = 'https://img.freepik.com/free-vector/restaurant-mural
 const DishCard = ({ dish }) => {
     const { cart, addToCart } = useCart();
 
-    // 根据后端数据结构调整字段访问
-    const dishId = dish.dish_id;
-    const dishName = dish.dish_name;
-    const dishDescription = dish.dish_description;
-    const dishPrice = dish.price;
-    const shopName = dish.shop_name;
-    const shopPhone = dish.phone;
-    const category = dish.category;
-    const distance = dish.distance;
+    const dishInfo = dish.dishBasic;
+    const shopInfo = dish.shopBasic;
 
-    const isInCart = cart.some(item => item.id === dishId);
+    const dishId = dishInfo.dishId;
+    const dishName = dishInfo.dishName;
+    const dishDescription = dishInfo.dishDescription;
+    const dishPrice = dishInfo.price;
+    const category = dishInfo.category;
+    const viewCount = dishInfo.viewCount;
+    const favoriteCount = dishInfo.favoriteCount;
+    const likeCount = dishInfo.likeCount;
 
+    const shopName = shopInfo.shopName;
+
+    const isInCart = cart.some(item => item.dishId === dishId);
 
     const handleAddToCart = () => {
         if (isInCart) {
             message.warning(`${dishName} 已在购物车中`);
             return;
         }
-        addToCart(dish.dish_id);
+        addToCart(dishId);
         message.success(`${dishName} 已加入购物车`);
     };
 
-    const formatDistance = (distance) => {
-        if (!distance) return null;
-        return distance < 1000 ? `${distance}m` : `${(distance / 1000).toFixed(1)}km`;
+    const handleLike = async () => {
+        try {
+            await likeDish(dishId);
+            message.success('已点赞');
+        } catch (err) {
+            message.error('点赞失败');
+        }
     };
 
-    const handlePhoneClick = () => {
-        if (shopPhone) {
-            window.location.href = `tel:${shopPhone}`;
+    const handleFavorite = async () => {
+        try {
+            await favoriteDish(dishId);
+            message.success('已收藏');
+        } catch (err) {
+            message.error('收藏失败');
         }
     };
 
@@ -52,21 +68,17 @@ const DishCard = ({ dish }) => {
                 <div className="image-container">
                     <img
                         alt={dishName}
-                        src={dish.image || DEFAULT_DISH_IMAGE}
+                        src={dishInfo.image || DEFAULT_DISH_IMAGE}
                         className="dish-image"
                     />
-                    {distance && <span className="distance-badge">{formatDistance(distance)}</span>}
                 </div>
             }
             actions={[
-                <Tooltip title="联系商家" key="call">
-                    <PhoneOutlined onClick={handlePhoneClick} />
+                <Tooltip title="点赞" key="like">
+                    <LikeOutlined onClick={handleLike} />
                 </Tooltip>,
                 <Tooltip title="收藏" key="favorite">
-                    <HeartOutlined />
-                </Tooltip>,
-                <Tooltip title="分享" key="share">
-                    <ShareAltOutlined />
+                    <HeartOutlined onClick={handleFavorite} />
                 </Tooltip>,
                 <Tooltip title={isInCart ? `${dishName} 已在购物车中` : "加入购物车"} key="addCart">
                     <ShoppingCartOutlined
@@ -80,7 +92,6 @@ const DishCard = ({ dish }) => {
                 <img src={DEFAULT_SHOP_IMAGE} alt={shopName} className="shop-image" />
                 <div className="shop-details">
                     <h4 className="shop-name">{shopName || '未知商家'}</h4>
-                    {shopPhone && <div className="shop-phone">{shopPhone}</div>}
                 </div>
             </div>
 
@@ -96,6 +107,11 @@ const DishCard = ({ dish }) => {
                             {category}
                         </Tag>
                     )}
+                    <div className="dish-stats">
+                        <Tooltip title="浏览量"><EyeOutlined /> {viewCount}</Tooltip>
+                        <Tooltip title="收藏"><HeartOutlined /> {favoriteCount}</Tooltip>
+                        <Tooltip title="点赞"><LikeOutlined /> {likeCount}</Tooltip>
+                    </div>
                 </div>
 
                 {dishDescription && (

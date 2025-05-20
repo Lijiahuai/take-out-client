@@ -1,11 +1,7 @@
 const baseUrl = 'http://localhost:8080';
-export const getRecommendDish = async (x, y, radius) => {
+export const getRecommendDish = async () => {
   try {
-    const url = new URL(`${baseUrl}/user/dashboard/getRecommendDish`);
-    url.searchParams.append('x', x);
-    url.searchParams.append('y', y);
-    url.searchParams.append('radius', radius);
-
+    const url = new URL(`${baseUrl}/user/dashboard/getRecommendDishCard`);
     const response = await fetch(url.toString(), {
       headers: {
         'Accept': 'application/json',
@@ -26,5 +22,46 @@ export const getRecommendDish = async (x, y, radius) => {
   } catch (error) {
     console.error('获取推荐菜品失败:', error);
     return []; // 降级处理
+  }
+};
+
+export const likeDish = async (dishId) => {
+  try {
+    const response = await fetch('http://localhost:8080/dish/like', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ dishId }),
+    });
+
+    if (!response.ok) {
+      throw new Error('点赞失败');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('点赞请求出错:', error);
+    throw error;
+  }
+};
+export const favoriteDish = async (dishId) => {
+  try {
+    const response = await fetch('http://localhost:8080/dish/favorite', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ dishId }),
+    });
+
+    if (!response.ok) {
+      throw new Error('收藏失败');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('收藏请求出错:', error);
+    throw error;
   }
 };

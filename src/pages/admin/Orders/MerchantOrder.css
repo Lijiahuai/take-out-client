@@ -1,0 +1,79 @@
+.merchant-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.order-header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.order-card {
+    margin-bottom: 16px;
+}
+
+/* 信息块样式 */
+.user-info-block {
+    line-height: 1.6;
+}
+
+.dish-info {
+    padding: 8px 0;
+}
+
+.dish-name {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.dish-price {
+    color: #ff4d4f;
+}
+
+.remark-block {
+    background: #f8f8f8;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+/* 操作按钮布局 */
+.action-buttons {
+    margin-top: 12px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* 响应式优化 */
+@media (max-width: 768px) {
+    .ant-descriptions-item-label {
+        width: 100px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons button {
+        width: 100%;
+    }
+}
+
+/* 禁用按钮样式优化 */
+.ant-btn[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* 操作按钮间距调整 */
+.action-buttons {
+    gap: 12px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .action-buttons button {
+        width: 100%;
+    }
+}

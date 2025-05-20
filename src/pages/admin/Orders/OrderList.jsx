@@ -69,9 +69,8 @@ const OrderList = () => {
     const fetchOrders = async () => {
         setLoading(true);
         try {
-            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-            const orderData = await getOrders(userInfo.data.admin_id)
-            console.log("订单列表",orderData);
+            const orderData = await getOrders();
+            console.log("订单列表", orderData);
             setOrders(orderData);
             setFilteredOrders(orderData);
         } catch (err) {
@@ -97,15 +96,15 @@ const OrderList = () => {
 
     // 定义表格列
     const columns = [
-        { title: '订单号', dataIndex: 'order_id', key: 'order_id' },
-        { title: '用户姓名', dataIndex: 'real_name', key: 'real_name' },
+        { title: '订单号', dataIndex: 'orderId', key: 'order_id' },
+        { title: '用户姓名', dataIndex: 'realName', key: 'real_name' },
         { title: '联系电话', dataIndex: 'phone', key: 'phone' },
         {
             title: '地址坐标',
             key: 'location',
             render: (_, record) => `(${record.x}, ${record.y})`
         },
-        { title: '菜品', dataIndex: 'dish_name', key: 'dish_name' },
+        { title: '菜品', dataIndex: 'dishName', key: 'dish_name' },
         {
             title: '价格',
             dataIndex: 'price',

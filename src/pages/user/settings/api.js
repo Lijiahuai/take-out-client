@@ -2,7 +2,7 @@ const baseUrl = 'http://localhost:8080';
 
 export const getUserInfo = async () => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-    const response = await fetch(`${baseUrl}/user/info/getUserInfo?id=${userInfo.data.user_id}`, {
+    const response = await fetch(`${baseUrl}/user/info/getUserInfo?id=${userInfo.data.userId}`, {
         headers: { 'Accept': 'application/json' }
     });
     if (!response.ok) throw new Error('获取用户信息失败');

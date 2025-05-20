@@ -1,5 +1,5 @@
-
-export const getAdminInfo = async (adminId) => {
+const adminId = JSON.parse(localStorage.getItem('adminInfo')).data.adminId;
+export const getAdminInfo = async () => {
   try {
     const res = await fetch(`http://localhost:8080/admin/info/getInfo?adminId=${adminId}`, {
       method: 'GET',

@@ -138,106 +138,70 @@ const SimulatedMap = () => {
     return groups;
   };
 
-  // 获取附近商家
   const fetchNearbyShops = useCallback(async () => {
-    if (!userLocation) return;
     try {
       setLoading(true);
-      const nearbyShops = await getNearByShops(
-        userLocation.x,
-        userLocation.y,
-        distance
-      );
+      const nearbyShops = await getNearByShops(userLocation.x, userLocation.y, distance);
+      console.log(nearbyShops);
 
-      if (!nearbyShops || nearbyShops.length === 0) {
-        message.info('当前范围内没有找到商家');
-        setShops([]);
-        setShopGroups([]);
-        setBounds(calculateBounds([]));
-        return;
-      }
-
-      const randomlySelected = nearbyShops.length > MAX_DISPLAY
-        ? [...nearbyShops].sort(() => 0.5 - Math.random()).slice(0, MAX_DISPLAY)
-        : nearbyShops;
-
-      const shopsWithDistance = randomlySelected.map(shop => {
-        const dist = Math.sqrt(
+      const processedShops = (nearbyShops || []).map(shop => ({
+        adminId: shop.adminId,
+        shopName: shop.shopName,
+        phone: shop.phone,
+        shopDescription: shop.shopDescription,
+        x: shop.x,
+        y: shop.y,
+        distance: Math.sqrt(
           Math.pow(shop.x - userLocation.x, 2) +
           Math.pow(shop.y - userLocation.y, 2)
-        );
-        return {
-          ...shop,
-          distance: dist,
-          color: dist < 1000 ? '#52c41a' : '#faad14'
-        };
-      }).sort((a, b) => a.distance - b.distance);
+        )
+      })).filter(shop => shop.distance <= distance)
+        .sort((a, b) => a.distance - b.distance);
 
-      const newBounds = calculateBounds(shopsWithDistance);
-      setBounds(newBounds);
-      setShops(shopsWithDistance);
-      setShopGroups(groupShops(shopsWithDistance));
-      setSearchResult(null);
+      const limitedShops = processedShops.length > MAX_DISPLAY
+        ? processedShops.slice(0, MAX_DISPLAY)
+        : processedShops;
 
-      if (nearbyShops.length > MAX_DISPLAY) {
-        message.info(`已随机展示${MAX_DISPLAY}家商家（共${nearbyShops.length}家）`);
-      }
+      const shopsWithStyle = limitedShops.map(shop => ({
+        ...shop,
+        color: shop.distance < 1000 ? '#52c41a' : '#faad14'
+      }));
+
+      setBounds(calculateBounds(shopsWithStyle));
+      setShops(shopsWithStyle);
+      setShopGroups(groupShops(shopsWithStyle));
 
     } catch (error) {
-      message.error('加载商家数据失败');
-      setShops([]);
-      setShopGroups([]);
-      setBounds(calculateBounds([]));
+      message.error('加载商家失败');
     } finally {
       setLoading(false);
     }
   }, [userLocation, distance]);
 
-  // 处理搜索事件
   const handleSearch = useCallback(async () => {
-    if (!searchQuery.trim()) {
-      message.warning('请输入搜索内容');
-      return;
-    }
-
     try {
-      setIsSearching(true);
-      const searchResults = await searchShops(searchQuery);
-
-      if (searchResults.length === 0) {
-        message.warning('未找到相关商家');
-        setShops([]);
-        setShopGroups([]);
-        setSearchResult([]);
-        setBounds(calculateBounds([]));
-        return;
-      }
-
-      const resultsWithDistance = searchResults.map(shop => {
-        const dist = Math.sqrt(
+      const results = await searchShops(searchQuery);
+      const processedResults = results.map(shop => ({
+        adminId: shop.adminId,
+        shopName: shop.shopName,
+        phone: shop.phone,
+        shopDescription: shop.shopDescription,
+        x: shop.x,
+        y: shop.y,
+        distance: Math.sqrt(
           Math.pow(shop.x - userLocation.x, 2) +
           Math.pow(shop.y - userLocation.y, 2)
-        );
-        return {
-          ...shop,
-          distance: dist,
-          color: dist < 1000 ? '#52c41a' : '#faad14'
-        };
-      }).sort((a, b) => a.distance - b.distance);
+        )
+      }));
 
-      const newBounds = calculateBounds(resultsWithDistance);
-      setBounds(newBounds);
-      setShops(resultsWithDistance);
-      setShopGroups(groupShops(resultsWithDistance));
-      setSearchResult(resultsWithDistance);
+      setShops(processedResults);
+      setSearchResult(processedResults);
 
     } catch (error) {
       message.error('搜索失败');
-      console.error(error);
-    } finally {
-      setIsSearching(false);
     }
   }, [searchQuery, userLocation]);
+
 
   useEffect(() => {
     if (userLocation) {
@@ -301,10 +265,10 @@ const SimulatedMap = () => {
               const screenCoord = transformCoordinate(shop);
               return (
                 <ShopMarker
-                  key={shop.id}
+                  key={shop.adminId}  // 修改key
                   shop={shop}
                   screenCoord={screenCoord}
-                  onClick={() => handleShopClick(shop.id)}
+                  onClick={() => handleShopClick(shop.adminId)}  // 改为传递adminId
                 />
               );
             })}
@@ -360,9 +324,9 @@ const SimulatedMap = () => {
                 <div className="shop-group">
                   {searchResult.map(shop => (
                     <ShopCard
-                      key={shop.id}
+                      key={shop.adminId}  // 修改key
                       shop={shop}
-                      onClick={() => handleShopClick(shop.id)}
+                      onClick={() => handleShopClick(shop.adminId)}  // 改为传递adminId
                     />
                   ))}
                 </div>
@@ -371,9 +335,9 @@ const SimulatedMap = () => {
                   <div key={index} className="shop-group">
                     {group.map(shop => (
                       <ShopCard
-                        key={shop.id}
+                        key={shop.adminId}  // 修改key
                         shop={shop}
-                        onClick={() => handleShopClick(shop.id)}
+                        onClick={() => handleShopClick(shop.adminId)}  // 改为传递adminId
                       />
                     ))}
                   </div>

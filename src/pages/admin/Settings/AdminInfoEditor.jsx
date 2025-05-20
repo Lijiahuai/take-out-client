@@ -3,7 +3,7 @@ import { Form, Input, InputNumber, Button, Upload, Descriptions, Tag, Space } fr
 import { UploadOutlined, EditOutlined, SaveOutlined, CloseOutlined } from '@ant-design/icons';
 import { getAdminInfo, updateAdminInfo } from './Api';
 import { showNotification } from '../../../components/ui/Notification';
-import './css.css';
+import './AdminInfoEditor.css';
 
 const AdminInfoEditor = ({ onSuccess }) => {
   const [form] = Form.useForm();
@@ -14,13 +14,12 @@ const AdminInfoEditor = ({ onSuccess }) => {
   // 获取商家数据
   useEffect(() => {
     const fetchAdminData = async () => {
-      const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      console.log("商家信息：", userInfo.data);
-      if (!userInfo || !userInfo.data) {
+      const adminInfo = JSON.parse(localStorage.getItem('adminInfo'));
+      if (!adminInfo || !adminInfo.data) {
         showNotification('请重新登录', 'error');
         return;
       }
-      const data = await getAdminInfo(userInfo.data.admin_id);
+      const data = await getAdminInfo();
       console.log("商家数据：", data);
       setAdminData(data);
       form.setFieldsValue(data); // 同步初始表单数据
@@ -83,19 +82,19 @@ const AdminInfoEditor = ({ onSuccess }) => {
       <div className="header-section">
         <h2 className="editor-title">店铺信息</h2>
         <div className="last-update">
-          最后更新时间: <Tag color="blue">{adminData.update_time}</Tag>
+          最后更新时间: <Tag color="blue">{adminData.updateTime}</Tag>
         </div>
       </div>
 
       {!isEditing ? (
         <div className="display-mode">
           <Descriptions bordered column={2}>
-            <Descriptions.Item label="店铺名称">{adminData.shop_name || '未设置'}</Descriptions.Item>
+            <Descriptions.Item label="店铺名称">{adminData.shopName || '未设置'}</Descriptions.Item>
             <Descriptions.Item label="坐标位置">
-              X: {adminData.x_coord}, Y: {adminData.y_coord}
+              X: {adminData.x}, Y: {adminData.y}
             </Descriptions.Item>
             <Descriptions.Item label="联系电话">{adminData.phone || '未设置'}</Descriptions.Item>
-            <Descriptions.Item label="店铺描述">{adminData.shop_description || '未设置'}</Descriptions.Item>
+            <Descriptions.Item label="店铺描述">{adminData.shopDescription || '未设置'}</Descriptions.Item>
             <Descriptions.Item label="店铺Logo" span={2}>
               {adminData.logo_url ? (
                 <img

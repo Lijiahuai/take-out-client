@@ -1,42 +1,51 @@
+// ShopCard.jsx
 import React from 'react';
-import { Card, Avatar } from 'antd';
+import { Card, Avatar, Tag } from 'antd';
 import './ShopCard.css';
 
 const ShopCard = ({ shop, onClick }) => {
   const {
-    name,
+    adminId,
+    shopName,
     phone,
-    logoUrl,
-    description,
-    distance,
-    color
+    shopDescription,
+    x,
+    y
   } = shop;
 
   return (
     <Card
-      className="shop-card"
+      className="modern-shop-card"
       hoverable
-      style={{ borderLeft: `3px solid ${color || '#1890ff'}` }}
-      onClick={() => onClick(shop.id)}
+      onClick={() => onClick(adminId)}
     >
-      <div className="shop-card-header">
-        {logoUrl ? (
-          <Avatar src={logoUrl} size="large" />
-        ) : (
-          <Avatar size="large">
-            {name ? name.charAt(0) : '?'}
-          </Avatar>
-        )}
-        <div className="shop-info">
-          <h4>{name || '未命名商家'}</h4>
-          <span className="distance" style={{ color: color || '#1890ff' }}>
-            {(distance / 1000).toFixed(2)} 公里
-          </span>
+      <div className="shop-header">
+        <Avatar 
+          size={64}
+          className="shop-avatar"
+          style={{ backgroundColor: '#1890ff' }}
+        >
+          {shopName?.charAt(0) || '?'}
+        </Avatar>
+        
+        <div className="shop-meta">
+          <h3 className="shop-title">{shopName || '未命名店铺'}</h3>
+          <div className="location-tag">
+            <Tag color="geekblue">坐标</Tag>
+            <span>{x}, {y}</span>
+          </div>
         </div>
       </div>
-      <div className="shop-card-body">
-        <p><span className="label">电话:</span> {phone || '暂无'}</p>
-        <p className="description">{description || '暂无描述'}</p>
+
+      <div className="shop-body">
+        <div className="info-row">
+          <label>联系方式：</label>
+          <span>{phone || '暂无'}</span>
+        </div>
+        
+        <div className="description-box">
+          <p>{shopDescription || '该店铺暂无描述信息'}</p>
+        </div>
       </div>
     </Card>
   );

@@ -59,6 +59,7 @@ export const searchShops = async (query) => {
 };
 export const getShopDetail = async (shopId) => {
   try {
+    console.log('获取商家详情:', shopId);
     const url = new URL(`${baseUrl}/user/map/getShopDetail`);
     url.searchParams.append('id', shopId);
 

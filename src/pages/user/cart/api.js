@@ -5,7 +5,7 @@ export const settlement = async (cartData) => {
         if (!userInfo || !userInfo.data) {
             throw new Error('用户信息缺失，请重新登录');
         }
-
+        console.log("用户信息", userInfo.data)
         const response = await fetch('http://localhost:8080/user/cart/settlement', {
             method: 'POST',
             headers: {

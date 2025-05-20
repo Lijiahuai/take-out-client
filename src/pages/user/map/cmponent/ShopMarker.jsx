@@ -1,33 +1,48 @@
 import React from 'react';
+import { Tooltip, Tag } from 'antd';
 import './ShopMarker.css';
-import { Tooltip } from 'antd';
 
 const ShopMarker = ({ shop, screenCoord, onClick }) => {
+  // 变量定义在组件开头
+  const { 
+    adminId, 
+    shopName = '未命名店铺', 
+    x = 0, 
+    y = 0 
+  } = shop || {};
+
   return (
     <div
-      className="shop-marker"
+      className="modern-marker"
       style={{
         left: `${screenCoord.x}px`,
         top: `${screenCoord.y}px`,
       }}
-      onClick={() => onClick(shop.id)}
+      onClick={() => onClick(adminId)}
     >
       <Tooltip
         title={
-          <div className="shop-tooltip">
-            <strong>{shop.name}</strong>
-            <div>类型: {shop.category || '未知'}</div>
-            <div>距离: {(shop.distance / 1000).toFixed(2)} km</div>
+          <div className="rich-tooltip">
+            <h4 className="shop-name">{shopName}</h4>
+            <div className="tooltip-row">
+              <span className="label">ID：</span>
+              <Tag color="blue">{adminId || '未知ID'}</Tag>
+            </div>
+            <div className="tooltip-row">
+              <span className="label">坐标：</span>
+              {x}, {y}
+            </div>
           </div>
         }
         placement="top"
-        arrow={true}
+        overlayClassName="custom-tooltip"
+        color="#fff"
       >
-        <div
-          className="marker-icon"
-          style={{ borderColor: shop.color }}
-        >
-          🏪
+        <div className="marker-icon">
+          <div className="pulsar-effect" />
+          <div className="marker-main">
+            🏬
+          </div>
         </div>
       </Tooltip>
     </div>

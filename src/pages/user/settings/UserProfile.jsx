@@ -17,22 +17,21 @@ const UserProfile = () => {
             try {
                 const userData = await getUserInfo();
                 console.log('用户信息:', userData);
-                
-                // 转换数据格式
+
                 const formData = {
                     ...userData,
-                    createTime: moment(userData.create_time),
-                    update_time: moment(userData.update_time)
+                    createTime: userData.createTime ? moment(userData.createTime) : null,
+                    updateTime: userData.updateTime ? moment(userData.updateTime) : null
                 };
-                
+
+
                 setInitialValues(formData);
                 form.setFieldsValue(formData);
             } catch (error) {
                 message.error(`获取用户信息失败: ${error.message}`);
-                // 降级处理
                 form.setFieldsValue({
                     username: 'guest',
-                    real_name: '访客用户',
+                    realName: '访客用户',
                     gender: 'M',
                     phone: '',
                     x: 0,
@@ -49,7 +48,6 @@ const UserProfile = () => {
 
     const handleEdit = () => {
         setIsEditing(true);
-        // 重置密码字段，避免直接修改原密码
         form.setFieldsValue({ password: '' });
     };
 
@@ -61,29 +59,27 @@ const UserProfile = () => {
     const handleSubmit = async (values) => {
         setLoading(true);
         try {
-            // 准备提交数据（过滤掉不允许修改的字段）
             const submitData = {
-                real_name: values.real_name,
+                realName: values.realName,
                 phone: values.phone,
                 gender: values.gender,
                 x: values.x,
                 y: values.y,
                 remark: values.remark,
-                // 只有密码字段有值时才更新密码
                 ...(values.password && { password: values.password })
             };
-            
+
             console.log('提交的数据:', submitData);
             await updateUserInfo(submitData);
-            
+
             message.success('个人信息更新成功');
             setIsEditing(false);
-            // 刷新数据
+
             const newData = await getUserInfo();
             form.setFieldsValue({
                 ...newData,
-                createTime: moment(newData.create_time),
-                update_time: moment(newData.update_time)
+                createTime: moment(newData.createTime),
+                updateTime: moment(newData.updateTime)
             });
         } catch (error) {
             message.error(`更新失败: ${error.message}`);
@@ -115,15 +111,15 @@ const UserProfile = () => {
                                 { max: 20, message: '密码最多20位' }
                             ] : []}
                         >
-                            <Input.Password 
-                                placeholder={isEditing ? '输入新密码（留空不修改）' : '******'} 
+                            <Input.Password
+                                placeholder={isEditing ? '输入新密码（留空不修改）' : '******'}
                                 disabled={!isEditing}
                             />
                         </Form.Item>
 
-                        <Form.Item 
-                            label="真实姓名" 
-                            name="real_name"
+                        <Form.Item
+                            label="真实姓名"
+                            name="realName"
                             rules={[{ required: true, message: '请输入真实姓名' }]}
                         >
                             <Input />
@@ -142,8 +138,8 @@ const UserProfile = () => {
                     </div>
 
                     <div style={{ flex: 1 }}>
-                        <Form.Item 
-                            label="性别" 
+                        <Form.Item
+                            label="性别"
                             name="gender"
                             rules={[{ required: true, message: '请选择性别' }]}
                         >
@@ -154,16 +150,16 @@ const UserProfile = () => {
                             </Select>
                         </Form.Item>
 
-                        <Form.Item 
-                            label="经度(X)" 
+                        <Form.Item
+                            label="经度(X)"
                             name="x"
                             rules={[{ required: true, message: '请输入经度' }]}
                         >
                             <Input type="number" />
                         </Form.Item>
 
-                        <Form.Item 
-                            label="纬度(Y)" 
+                        <Form.Item
+                            label="纬度(Y)"
                             name="y"
                             rules={[{ required: true, message: '请输入纬度' }]}
                         >
@@ -181,7 +177,7 @@ const UserProfile = () => {
                         <Form.Item label="创建时间" name="createTime">
                             <DatePicker showTime disabled style={{ width: '100%' }} />
                         </Form.Item>
-                        <Form.Item label="更新时间" name="update_time">
+                        <Form.Item label="更新时间" name="updateTime">
                             <DatePicker showTime disabled style={{ width: '100%' }} />
                         </Form.Item>
                     </div>

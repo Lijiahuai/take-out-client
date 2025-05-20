@@ -112,7 +112,7 @@ const UserHome = () => {
   )?.key || 'home';
 
   // 拖拽相关代码
-  const [cartPosition, setCartPosition] = useState({ x: 1500, y: 800 }); // 初始位置
+  const [cartPosition, setCartPosition] = useState({ x: 100, y: 800 }); // 初始位置
   const dragRef = useRef(null);
 
   const handleMouseDown = (e) => {

@@ -30,7 +30,7 @@ const DishList = () => {
     const columns = [
         { 
             title: '名称', 
-            dataIndex: 'dish_name', 
+            dataIndex: 'dishName', 
             key: 'dish_name',
             ellipsis: true,
             width: '15%'
@@ -44,7 +44,7 @@ const DishList = () => {
         },
         { 
             title: '描述', 
-            dataIndex: 'dish_description', 
+            dataIndex: 'dishDescription', 
             key: 'dish_description',
             ellipsis: true,
             width: '25%'
@@ -111,7 +111,7 @@ const DishList = () => {
                 <Table
                     dataSource={data}
                     columns={columns}
-                    rowKey="dish_id"
+                    rowKey="dishId"
                     loading={loading}
                     pagination={{ 
                         pageSize: 10,

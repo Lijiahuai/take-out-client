@@ -33,8 +33,7 @@ export default function Login() {
                 };
 
                 // 存储在 localStorage 中
-                localStorage.setItem('userInfo', JSON.stringify(userInfo));
-
+                localStorage.setItem(`${result.role}Info`, JSON.stringify(userInfo));
                 console.log(userInfo);
                 showNotification('登录成功', 'success');
                 navigate(result.role === 'user' ? '/user' : '/admin');

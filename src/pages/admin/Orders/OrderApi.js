@@ -1,7 +1,43 @@
-export const getOrders = async (admin_id) => {
-    const response = await fetch(`http://localhost:8080/order/admin/getAllOrder?adminId=${admin_id}`);
+
+const adminId = JSON.parse(localStorage.getItem('adminInfo')).data.adminId;
+export const getOrders = async () => {
+    if (!adminId) throw new Error('请重新登录');
+    const response = await fetch(`http://localhost:8080/order/admin/getAllOrder?adminId=${adminId}`);
     if (!response.ok) {
         throw new Error('获取订单列表失败');
     }
     return response.json();
+};
+
+export const getPendingOrders = async () => {
+    if (!adminId) throw new Error('请重新登录');
+    const response = await fetch(`http://localhost:8080/order/admin/getNewOrders?adminId=${adminId}`);
+    if (!response.ok) {
+        throw new Error('获取待处理订单列表失败');
+    }
+    return response.json();
+
+};
+
+export const acceptOrder = async (orderId) => {
+    const response = await fetch(`http://localhost:8080/order/admin/acceptOrder/${orderId}`, {
+        method: 'PUT',
+    });
+
+    if (!response.ok) {
+        throw new Error('接单失败');
+    }
+    return response.json();
+};
+
+export const rejectOrder = async (orderId) => {
+    const response = await fetch(`http://localhost:8080/order/admin/rejectOrder/${orderId}`, {
+        method: 'PUT',
+    });
+
+    if (!response.ok) {
+        throw new Error('接单失败');
+    }
+    return response.json();
+
 };

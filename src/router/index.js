@@ -10,6 +10,7 @@ import AdminHome from '../pages/admin/Home/AdminHome.jsx';
 import Dashboard from '../pages/admin/Dashboard/Dashboard.jsx';
 import DishList from '../pages/admin/Dishes/DishList.jsx';
 import OrderList from '../pages/admin/Orders/OrderList.jsx';
+import MerchantOrder from '../pages/admin/Orders/MerchantOrder.jsx';
 import AdminInfoEditor from '../pages/admin/Settings/AdminInfoEditor.jsx';
 
 // 用户页面
@@ -31,6 +32,7 @@ export default function Router() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="dish" element={<DishList />} />
           <Route path="orders" element={<OrderList />} />
+          <Route path="merchant" element={<MerchantOrder />} />
           <Route path="edit" element={<AdminInfoEditor />} />
         </Route>
 

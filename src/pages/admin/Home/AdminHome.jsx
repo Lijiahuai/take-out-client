@@ -45,7 +45,7 @@ export default function AdminHome() {
         {
             key: '4',
             icon: <PieChartOutlined className="menu-icon" />,
-            label: '数据报表',
+            label: '接单管理',
         },
         {
             key: '5',
@@ -83,7 +83,7 @@ export default function AdminHome() {
                 case '1': navigate('/admin/dashboard'); break;
                 case '2': navigate('/admin/orders'); break;
                 case '3': navigate('/admin/dish'); break;
-                case '4': navigate('/admin/reports'); break;
+                case '4': navigate('/admin/merchant'); break;
                 case '5': navigate('/admin/edit'); break;
                 default: break;
             }

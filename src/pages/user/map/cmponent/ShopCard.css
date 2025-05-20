@@ -1,32 +1,58 @@
-.shop-card-header {
+/* ShopCard.css */
+.modern-shop-card {
+  border-radius: 12px !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.modern-shop-card:hover {
+  transform: translateY(-2px);
+}
+
+.shop-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.shop-avatar {
+  margin-right: 16px;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.shop-meta {
+  flex: 1;
+}
+
+.shop-title {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+}
+
+.location-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+}
+
+.shop-body {
+  .info-row {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    align-items: baseline;
+    margin-bottom: 8px;
+    
+    label {
+      color: #666;
+      min-width: 70px;
+    }
   }
   
-  .shop-info h4 {
-    margin: 0;
-    font-size: 16px;
+  .description-box {
+    padding: 12px;
+    background: #f8f8f8;
+    border-radius: 6px;
+    color: #444;
   }
-  
-  .shop-info .distance {
-    font-size: 12px;
-    margin-top: 4px;
-    display: inline-block;
-  }
-  
-  .shop-card-body {
-    margin-top: 8px;
-    font-size: 14px;
-  }
-  
-  .shop-card-body .label {
-    font-weight: bold;
-    margin-right: 4px;
-  }
-  
-  .shop-card-body .description {
-    color: #555;
-    margin-top: 4px;
-  }
-  
+}

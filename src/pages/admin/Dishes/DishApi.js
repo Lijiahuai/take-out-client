@@ -7,12 +7,13 @@ const handleResponse = async (response) => {
     return response.json();
 };
 
+const adminId = JSON.parse(localStorage.getItem('adminInfo')).data.adminId;
+
 export const getAllDish = async (params = {}) => {
     try {
-        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        if (!userInfo) throw new Error('请重新登录');
+        if (!adminId) throw new Error('请重新登录');
 
-        const res = await fetch(`http://localhost:8080/admin/dish/getAllDish?admin_id=${userInfo.data.admin_id}`);
+        const res = await fetch(`http://localhost:8080/admin/dish/getAllDish?admin_id=${adminId}`);
 
         if (!res.ok) throw new Error('请求失败');
 
@@ -48,9 +49,8 @@ export const updateDish = async (dishData) => {
 
 export const createDish = async (dishData) => {
     console.log('dishData', dishData);
-    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-    if (!userInfo) throw new Error('请重新登录');
-    const response = await fetch(`http://localhost:8080/admin/dish/addDish?admin_id=${userInfo.data.admin_id}`, {
+    if (!adminId) throw new Error('请重新登录');
+    const response = await fetch(`http://localhost:8080/admin/dish/addDish?admin_id=${adminId}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
