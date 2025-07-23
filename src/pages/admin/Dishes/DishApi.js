@@ -7,7 +7,18 @@ const handleResponse = async (response) => {
     return response.json();
 };
 
-const adminId = JSON.parse(localStorage.getItem('adminInfo')).data.adminId;
+const adminInfoRaw = localStorage.getItem('adminInfo');
+let adminId = null;
+
+if (adminInfoRaw) {
+    try {
+        const adminInfo = JSON.parse(adminInfoRaw);
+        adminId = adminInfo?.data?.adminId;
+    } catch (e) {
+        console.error("adminInfo 解析失败", e);
+    }
+}
+
 
 export const getAllDish = async (params = {}) => {
     try {

@@ -18,27 +18,37 @@ export default function Login() {
 
         setIsLoading(true);
         try {
-            const res = await fetch('http://localhost:8080/Auth/login', {
+            // 根据角色选择不同的API端点
+            const endpoint = role === 'user' 
+                ? 'http://localhost:8080/api/auth/login' 
+                : 'http://localhost:8080/api/auth/merchant/login';
+            
+            const res = await fetch(endpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password, role })
+                body: JSON.stringify({ username, password })
             });
 
             const result = await res.json();
 
-            if (result.status) {
+            // 检查请求是否成功
+            if (result.code === 200 && result.data) {
+                // 保存token
+                localStorage.setItem('token', result.data.token);
+                
                 const userInfo = {
-                    role: result.role,
-                    data: result.role === 'admin' ? result.admin : result.user  // ✅ 存储完整对象
+                    role: role,
+                    id: result.data.userId,
+                    username: result.data.username
                 };
 
                 // 存储在 localStorage 中
-                localStorage.setItem(`${result.role}Info`, JSON.stringify(userInfo));
-                console.log(userInfo);
+                localStorage.setItem(`${role}Info`, JSON.stringify(userInfo));
+                
                 showNotification('登录成功', 'success');
-                navigate(result.role === 'user' ? '/user' : '/admin');
+                navigate(role === 'user' ? '/user' : '/merchant');
             } else {
-                showNotification(result.error || '登录失败', 'error');
+                showNotification(result.message || '登录失败', 'error');
             }
         } catch (e) {
             console.error(e);
@@ -69,12 +79,12 @@ export default function Login() {
                         />
                         我是用户
                     </label>
-                    <label className={`role-option ${role === 'admin' ? 'active' : ''}`}>
+                    <label className={`role-option ${role === 'merchant' ? 'active' : ''}`}>
                         <input
                             type="radio"
-                            value="admin"
-                            checked={role === 'admin'}
-                            onChange={() => setRole('admin')}
+                            value="merchant"
+                            checked={role === 'merchant'}
+                            onChange={() => setRole('merchant')}
                             className="radio-input"
                         />
                         我是商家

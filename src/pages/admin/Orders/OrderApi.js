@@ -1,5 +1,14 @@
+const adminInfoRaw = localStorage.getItem('adminInfo');
+let adminId = null;
 
-const adminId = JSON.parse(localStorage.getItem('adminInfo')).data.adminId;
+if (adminInfoRaw) {
+    try {
+        const adminInfo = JSON.parse(adminInfoRaw);
+        adminId = adminInfo?.data?.adminId;
+    } catch (e) {
+        console.error("adminInfo 解析失败", e);
+    }
+}
 export const getOrders = async () => {
     if (!adminId) throw new Error('请重新登录');
     const response = await fetch(`http://localhost:8080/order/admin/getAllOrder?adminId=${adminId}`);

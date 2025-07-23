@@ -1,4 +1,14 @@
-const adminId = JSON.parse(localStorage.getItem('adminInfo')).data.adminId;
+const adminInfoRaw = localStorage.getItem('adminInfo');
+let adminId = null;
+
+if (adminInfoRaw) {
+    try {
+        const adminInfo = JSON.parse(adminInfoRaw);
+        adminId = adminInfo?.data?.adminId;
+    } catch (e) {
+        console.error("adminInfo 解析失败", e);
+    }
+}
 export const getAdminInfo = async () => {
   try {
     const res = await fetch(`http://localhost:8080/admin/info/getInfo?adminId=${adminId}`, {
