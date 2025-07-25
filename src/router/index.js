@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from '../pages/Auth/Login.js';
 import Register from '../pages/Auth/Register';
 import { CartProvider } from '../pages/user/context/CartContext.jsx';
+import { UserProvider } from '../pages/user/context/UserContext.jsx';
 
 
 // 管理员页面
@@ -40,9 +41,11 @@ export default function Router() {
         <Route
           path="/user"
           element={
-            <CartProvider>
-              <UserHome />
-            </CartProvider>
+            <UserProvider>
+              <CartProvider>
+                <UserHome />
+              </CartProvider>
+            </UserProvider>
           }
         >
           <Route index element={<UserDashboard />} />

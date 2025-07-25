@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Select, DatePicker, message } from 'antd';
 import moment from 'moment';
 import { getUserInfo, updateUserInfo } from './api';
+import { useUser, getGlobalUser } from '../context/UserContext'; // 导入用户上下文
 
 const { Option } = Select;
 
@@ -10,12 +11,22 @@ const UserProfile = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
     const [initialValues, setInitialValues] = useState(null);
+    
+    // 使用全局用户上下文
+    const { user: contextUser, updateUserInfo: contextUpdateUserInfo } = useUser();
 
     useEffect(() => {
         const fetchUserData = async () => {
             setLoading(true);
             try {
-                const userData = await getUserInfo();
+                // 优先使用上下文中的用户信息
+                let userData = contextUser || getGlobalUser();
+                
+                // 如果上下文中没有用户信息，则从API获取
+                if (!userData) {
+                    userData = await getUserInfo();
+                }
+                
                 console.log('用户信息:', userData);
 
                 const formData = {
@@ -23,7 +34,6 @@ const UserProfile = () => {
                     createTime: userData.createTime ? moment(userData.createTime) : null,
                     updateTime: userData.updateTime ? moment(userData.updateTime) : null
                 };
-
 
                 setInitialValues(formData);
                 form.setFieldsValue(formData);
@@ -44,7 +54,7 @@ const UserProfile = () => {
         };
 
         fetchUserData();
-    }, []);
+    }, [contextUser]);
 
     const handleEdit = () => {
         setIsEditing(true);
@@ -70,17 +80,30 @@ const UserProfile = () => {
             };
 
             console.log('提交的数据:', submitData);
-            await updateUserInfo(submitData);
+            
+            // 优先使用上下文中的更新方法
+            let success = false;
+            if (contextUpdateUserInfo) {
+                success = await contextUpdateUserInfo(submitData);
+            } else {
+                await updateUserInfo(submitData);
+                success = true;
+            }
 
-            message.success('个人信息更新成功');
-            setIsEditing(false);
+            if (success) {
+                message.success('个人信息更新成功');
+                setIsEditing(false);
 
-            const newData = await getUserInfo();
-            form.setFieldsValue({
-                ...newData,
-                createTime: moment(newData.createTime),
-                updateTime: moment(newData.updateTime)
-            });
+                // 如果使用的是API更新，则需要重新获取用户信息
+                if (!contextUpdateUserInfo) {
+                    const newData = await getUserInfo();
+                    form.setFieldsValue({
+                        ...newData,
+                        createTime: moment(newData.createTime),
+                        updateTime: moment(newData.updateTime)
+                    });
+                }
+            }
         } catch (error) {
             message.error(`更新失败: ${error.message}`);
         } finally {

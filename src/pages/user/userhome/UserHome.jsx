@@ -14,6 +14,7 @@ import {
 } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import './UserHome.css';
+import { useUser } from '../context/UserContext';
 
 const { Header, Content, Sider } = Layout;
 
@@ -25,55 +26,8 @@ const UserHome = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [cartVisible, setCartVisible] = useState(false);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { userInfo, loading, logout } = useUser();
 
-  useEffect(() => {
-    const fetchUserInfo = async () => {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const response = await fetch('http://localhost:8080/api/user/info', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-          const result = await response.json();
-          if (result.code === 200) {
-            setUser(result.data);
-          } else {
-            // token失效或错误，清除旧数据并跳转到登录页
-            localStorage.removeItem('token');
-            navigate('/login');
-          }
-        } catch (error) {
-          console.error('Failed to fetch user info:', error);
-          navigate('/login');
-        }
-      } else {
-        navigate('/login');
-      }
-      setLoading(false);
-    };
-
-    fetchUserInfo();
-  }, [navigate]);
-
-
-  // 用户信息
-  const userInfo = user ? {
-    name: user.real_name || user.nickname,
-    gender: user.gender,
-    phone: user.phone,
-    avatar: user.avatar || 'https://randomuser.me/api/portraits/men/1.jpg',
-    unreadMessages: 3, // 示例数据
-    unreadNotifications: 5, // 示例数据
-    location: {
-      x: user.x,
-      y: user.y,
-    }
-  } : {};
   // 导航菜单项
   const menuItems = [
     { key: 'home', icon: <HomeOutlined />, label: '首页' },
@@ -132,7 +86,7 @@ const UserHome = () => {
           label: '退出登录',
           icon: <LogoutOutlined />,
           danger: true,
-          onClick: () => navigate('/login')
+          onClick: () => logout()
         }
       ]}
     />

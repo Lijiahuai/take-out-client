@@ -5,6 +5,7 @@ import './SimulatedMap.css';
 import ShopCard from './cmponent/ShopCard';
 import ShopMarker from './cmponent/ShopMarker';
 import ShopDetail from './cmponent/ShopDetail';
+import { useUser } from '../context/UserContext'; // 导入useUser钩子
 
 const DEFAULT_DISTANCE = 500;
 const DEFAULT_NEARBY_SHOP_COUNT = 4;
@@ -12,10 +13,12 @@ const MAX_DISPLAY = 50;
 const DEFAULT_MAP_SIZE = { width: 1000, height: 1000 };
 
 const SimulatedMap = () => {
-  // 从localStorage中获取用户信息
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+  // 使用UserContext获取用户信息
+  const { user, userInfo } = useUser();
   // 设置用户位置
-  const [userLocation] = useState({ x: userInfo.data.x, y: userInfo.data.y });
+  const [userLocation, setUserLocation] = useState(() => {
+    return { x: user?.x || 5000, y: user?.y || 5000 };
+  });
   // 设置商家列表
   const [shops, setShops] = useState([]);
   // 设置加载状态
@@ -43,6 +46,14 @@ const SimulatedMap = () => {
 
   // 设置是否显示商家详情
   const [shopDetailVisible, setShopDetailVisible] = useState(false);
+
+  // 当用户信息更新时，更新用户位置
+  useEffect(() => {
+    if (user && user.x && user.y) {
+      // 更新用户位置
+      setUserLocation({ x: user.x, y: user.y });
+    }
+  }, [user]);
 
   // 计算地图边界
   const calculateBounds = (shopsData) => {
