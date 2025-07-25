@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Layout, Menu, theme, Avatar, Badge, Dropdown, Space } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
+import { Layout, Menu, theme, Avatar, Badge, Dropdown, Space, Spin } from 'antd';
 import CartDrawer from '../cart/CartDrawer'; // 路径按你项目结构调整
 import {
   UserOutlined,
@@ -25,23 +25,55 @@ const UserHome = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [cartVisible, setCartVisible] = useState(false);
-  const { role, data } = JSON.parse(localStorage.getItem('userInfo'));
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      if (token) {
+        try {
+          const response = await fetch('http://localhost:8080/api/user/info', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const result = await response.json();
+          if (result.code === 200) {
+            setUser(result.data);
+          } else {
+            // token失效或错误，清除旧数据并跳转到登录页
+            localStorage.removeItem('token');
+            navigate('/login');
+          }
+        } catch (error) {
+          console.error('Failed to fetch user info:', error);
+          navigate('/login');
+        }
+      } else {
+        navigate('/login');
+      }
+      setLoading(false);
+    };
+
+    fetchUserInfo();
+  }, [navigate]);
 
 
   // 用户信息
-  const user = {
-    name: data.real_name,
-    gender: data.gender,
-    phone: data.phone,
-    avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-    unreadMessages: 3,
-    unreadNotifications: 5,
+  const userInfo = user ? {
+    name: user.real_name || user.nickname,
+    gender: user.gender,
+    phone: user.phone,
+    avatar: user.avatar || 'https://randomuser.me/api/portraits/men/1.jpg',
+    unreadMessages: 3, // 示例数据
+    unreadNotifications: 5, // 示例数据
     location: {
-      x: data.x,
-      y: data.y,
+      x: user.x,
+      y: user.y,
     }
-  };
-
+  } : {};
   // 导航菜单项
   const menuItems = [
     { key: 'home', icon: <HomeOutlined />, label: '首页' },
@@ -136,6 +168,14 @@ const UserHome = () => {
     document.addEventListener('mouseup', handleMouseUp);
   };
 
+  if (loading) {
+    return (
+      <Layout style={{ minHeight: '100vh', justifyContent: 'center', alignItems: 'center' }}>
+        <Spin size="large" />
+      </Layout>
+    );
+  }
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* 侧边栏 */}
@@ -165,14 +205,14 @@ const UserHome = () => {
 
             <div className="header-right">
               <Space size="large">
-                <Badge count={user.unreadMessages} size="small">
+                <Badge count={userInfo.unreadMessages} size="small">
                   <MessageOutlined
                     className="header-icon"
                     onClick={() => navigate('/user/messages')}
                   />
                 </Badge>
 
-                <Badge count={user.unreadNotifications} size="small">
+                <Badge count={userInfo.unreadNotifications} size="small">
                   <BellOutlined
                     className="header-icon"
                     onClick={() => navigate('/user/notifications')}
@@ -181,8 +221,8 @@ const UserHome = () => {
 
                 <Dropdown overlay={userMenu} placement="bottomRight">
                   <div className="user-info">
-                    <Avatar src={user.avatar} />
-                    {!collapsed && <span className="username">{user.name}</span>}
+                    <Avatar src={userInfo.avatar} />
+                    {!collapsed && <span className="username">{userInfo.name}</span>}
                   </div>
                 </Dropdown>
               </Space>

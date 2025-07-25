@@ -35,16 +35,7 @@ export default function Login() {
             if (result.code === 200 && result.data) {
                 // 保存token
                 localStorage.setItem('token', result.data.token);
-                
-                const userInfo = {
-                    role: role,
-                    id: result.data.userId,
-                    username: result.data.username
-                };
-
-                // 存储在 localStorage 中
-                localStorage.setItem(`${role}Info`, JSON.stringify(userInfo));
-                
+                            
                 showNotification('登录成功', 'success');
                 navigate(role === 'user' ? '/user' : '/merchant');
             } else {

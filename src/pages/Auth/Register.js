@@ -1,40 +1,52 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { showNotification } from '../../components/ui/Notification';
-import './css/register.css'
+import './css/register.css';
 
 export default function Register() {
-    const [role, setRole] = useState('user');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleRegister = async () => {
-        if (!username || !password) {
-            showNotification('请填写用户名和密码', 'error');
+        if (!username || !password || !phone || !email) {
+            showNotification('请填写所有注册信息', 'error');
+            return;
+        }
+
+        // 简单的邮箱和手机号格式校验
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+            showNotification('请输入有效的邮箱地址', 'error');
+            return;
+        }
+        if (!/^\d{11}$/.test(phone)) {
+            showNotification('请输入11位手机号码', 'error');
             return;
         }
 
         setIsLoading(true);
         try {
-            const requestBody = { username, password, role };
+            const requestBody = { username, password, phone, email };
 
-            const res = await fetch('http://localhost:8080/Auth/register', {
+            const res = await fetch('http://localhost:8080/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestBody)
             });
 
-            const result = await res.text();
+            const result = await res.json();
 
-            if (result === "success") {
+            if (result.code === 200) {
                 showNotification('注册成功，请登录', 'success');
                 navigate('/login');
             } else {
-                showNotification('注册失败，用户名可能已存在', 'error');
+                showNotification(result.message || '注册失败，用户名可能已存在', 'error');
             }
         } catch (e) {
+            console.error(e);
             showNotification('网络错误', 'error');
         } finally {
             setIsLoading(false);
@@ -50,27 +62,9 @@ export default function Register() {
             <div className="register-card">
                 <h2 className="register-title">用户注册</h2>
                 
-                <div className="role-selector">
-                    <label className={`role-option ${role === 'user' ? 'active' : ''}`}>
-                        <input
-                            type="radio"
-                            value="user"
-                            checked={role === 'user'}
-                            onChange={() => setRole('user')}
-                            className="radio-input"
-                        />
-                        我是用户
-                    </label>
-                    <label className={`role-option ${role === 'admin' ? 'active' : ''}`}>
-                        <input
-                            type="radio"
-                            value="admin"
-                            checked={role === 'admin'}
-                            onChange={() => setRole('admin')}
-                            className="radio-input"
-                        />
-                        我是商家
-                    </label>
+                {/* 商家注册暂时禁用 */}
+                <div style={{textAlign: 'center', marginBottom: '1.5rem', color: '#888'}}>
+                    商家注册请联系平台管理员
                 </div>
                 
                 <div className="input-group">
@@ -86,6 +80,19 @@ export default function Register() {
                         placeholder="请输入密码"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
+                    />
+                    <input
+                        className="register-input"
+                        placeholder="请输入手机号"
+                        value={phone}
+                        onChange={e => setPhone(e.target.value)}
+                    />
+                    <input
+                        className="register-input"
+                        type="email"
+                        placeholder="请输入邮箱"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
                     />
                 </div>
                 
